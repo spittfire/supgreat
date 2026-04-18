@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { UploadZone } from "./UploadZone";
 import { Button } from "./ui/Button";
 import { useFlowStore } from "@/store/flow-store";
-import { cn } from "@/lib/utils";
 
 export function LandingForm() {
   const router = useRouter();
@@ -29,21 +28,16 @@ export function LandingForm() {
     <form onSubmit={onSubmit} className="w-full space-y-5">
       <UploadZone files={files} onChange={setFiles} />
 
-      <label
-        className={cn(
-          "flex items-start gap-3 cursor-pointer select-none",
-          "text-sm leading-relaxed text-ink/80 rounded-xl hairline bg-bone px-4 py-3",
-        )}
-      >
+      <label className="flex items-start gap-3 cursor-pointer select-none text-sm leading-relaxed text-silver rounded-xl border border-steel bg-onyx px-4 py-3 hover:border-iron transition-colors">
         <input
           type="checkbox"
           checked={consentGiven}
           onChange={(e) => setConsent(e.target.checked)}
-          className="mt-0.5 w-4 h-4 accent-moss"
+          className="mt-0.5 w-4 h-4 accent-lime"
         />
         <span>
           Ich stimme der Verarbeitung meines Bluttests zur Analyse zu.{" "}
-          <a href="/datenschutz" className="underline hover:text-moss">
+          <a href="/datenschutz" className="text-lime hover:underline">
             Datenschutz
           </a>
           .
@@ -52,7 +46,10 @@ export function LandingForm() {
 
       <Button type="submit" size="lg" disabled={!canSubmit} block>
         Analyse starten
-        <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
+        <ArrowRight
+          className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+          strokeWidth={1.6}
+        />
       </Button>
     </form>
   );

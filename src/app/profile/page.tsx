@@ -3,16 +3,34 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Cake, Ruler, Scale } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Cake,
+  Ruler,
+  Scale,
+  User,
+  UserRound,
+  Users,
+  UserCircle,
+  VenusAndMars,
+} from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GoalTile } from "@/components/ui/GoalTile";
-import { SexCard } from "@/components/ui/SexCard";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { TextField } from "@/components/ui/TextField";
-import { GOAL_META, SEX_META } from "@/lib/visuals";
+import { GOAL_META } from "@/lib/visuals";
 import { ProfileSchema, type Profile, type Sex } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
+
+const SEX_OPTIONS = [
+  { value: "male" as const, label: "Mann", icon: User },
+  { value: "female" as const, label: "Frau", icon: UserRound },
+  { value: "diverse" as const, label: "Divers", icon: Users },
+];
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -71,91 +89,93 @@ export default function ProfilePage() {
   return (
     <StepFrame
       step={3}
-      label="Profil"
+      label="Schritt 03 · Profil"
       title={
         <>
-          Ein paar <span className="italic text-brand-amber">Grunddaten</span>.
+          <span className="italic text-silver">Ein paar</span> Grunddaten.
         </>
       }
       sub="Damit wir deine Werte richtig einordnen — Alter und Geschlecht beeinflussen viele Referenzbereiche."
     >
-      <form onSubmit={onSubmit} className="space-y-12">
-        {/* Vorname */}
-        <section className="max-w-md">
+      <form onSubmit={onSubmit} className="space-y-14">
+        {/* Vorname + Geschlecht */}
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl">
           <TextField
-            label="Wie sollen wir dich nennen?"
+            icon={UserCircle}
+            label="Vorname"
             name="first_name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder="Dein Vorname"
+            placeholder="Wie sollen wir dich nennen?"
             required
             autoFocus
           />
-        </section>
-
-        {/* Geschlecht */}
-        <section>
-          <div className="text-sm text-ink font-medium mb-3">Geschlecht</div>
-          <div role="radiogroup" className="grid grid-cols-3 gap-3 max-w-xl">
-            {SEX_META.map((s) => (
-              <SexCard
-                key={s.value}
-                label={s.label}
-                icon={s.icon}
-                accent={s.accent as "moss" | "sage" | "brand-amber" | "coral"}
-                active={sex === s.value}
-                onClick={() => setSex(s.value)}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Numeric-Trio mit Icons */}
-        <section>
-          <div className="text-sm text-ink font-medium mb-3">Über dich</div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
-            <NumberCard
-              icon={Cake}
-              accent="text-brand-amber bg-brand-amber/15"
-              label="Alter"
-              unit="Jahre"
-              value={age}
-              onChange={(v) => setAge(v.replace(/\D/g, ""))}
-              placeholder="38"
-            />
-            <NumberCard
-              icon={Ruler}
-              accent="text-sage bg-sage/15"
-              label="Größe"
-              unit="cm"
-              value={height}
-              onChange={(v) => setHeight(v.replace(/\D/g, ""))}
-              placeholder="178"
-            />
-            <NumberCard
-              icon={Scale}
-              accent="text-coral bg-coral/10"
-              label="Gewicht"
-              unit="kg"
-              value={weight}
-              onChange={(v) => setWeight(v.replace(/\D/g, ""))}
-              placeholder="75"
+          <div>
+            <div className="mb-2.5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-silver font-medium">
+              <VenusAndMars className="w-3.5 h-3.5 text-lime" strokeWidth={1.5} />
+              Geschlecht
+            </div>
+            <SegmentedControl<Sex>
+              value={sex}
+              onChange={setSex}
+              options={SEX_OPTIONS}
+              ariaLabel="Geschlecht"
+              block
             />
           </div>
-        </section>
+        </div>
+
+        {/* Alter / Größe / Gewicht */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl">
+          <TextField
+            icon={Cake}
+            label="Alter"
+            name="age"
+            inputMode="numeric"
+            value={age}
+            onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
+            placeholder="38"
+            unit="Jahre"
+          />
+          <TextField
+            icon={Ruler}
+            label="Größe"
+            name="height"
+            inputMode="numeric"
+            value={height}
+            onChange={(e) => setHeight(e.target.value.replace(/\D/g, ""))}
+            placeholder="178"
+            unit="cm"
+          />
+          <TextField
+            icon={Scale}
+            label="Gewicht"
+            name="weight"
+            inputMode="numeric"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value.replace(/\D/g, ""))}
+            placeholder="75"
+            unit="kg"
+          />
+        </div>
 
         {/* Ziele */}
         <section>
-          <div className="flex items-baseline justify-between mb-1">
-            <div className="text-sm text-ink font-medium">Deine wichtigsten Ziele</div>
-            <div className="text-xs text-mist font-mono">
-              {goals.length} / 3 gewählt
+          <div className="flex items-end justify-between mb-5 gap-4 flex-wrap">
+            <div>
+              <Eyebrow>Deine Prioritäten</Eyebrow>
+              <h2 className="mt-3 font-display text-3xl md:text-4xl leading-tight tracking-tight text-pearl">
+                Was möchtest du{" "}
+                <span className="italic text-lime">verbessern</span>?
+              </h2>
+            </div>
+            <div className="font-mono text-sm text-silver">
+              <span className="text-lime">{goals.length}</span>{" "}
+              <span className="text-ash">/ 3</span>
             </div>
           </div>
-          <p className="text-xs text-mist mb-4">
-            Wähle bis zu 3 — danach sind weitere Karten gesperrt.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+
+          <div className="flex flex-wrap gap-2">
             {GOAL_META.map((g) => {
               const active = goals.includes(g.label);
               const disabled = !active && goals.length >= 3;
@@ -163,9 +183,7 @@ export default function ProfilePage() {
                 <GoalTile
                   key={g.label}
                   label={g.label}
-                  hint={g.hint}
                   icon={g.icon}
-                  accent={g.accent}
                   active={active}
                   disabled={disabled}
                   onClick={() => toggleGoal(g.label)}
@@ -178,9 +196,9 @@ export default function ProfilePage() {
         {error && <p className="text-sm text-coral">{error}</p>}
 
         {!hasAnalysis && (
-          <p className="text-xs text-mist">
+          <p className="text-xs text-ash">
             Hinweis: Du hast noch keinen Bluttest hochgeladen.{" "}
-            <Link href="/" className="underline hover:text-moss">
+            <Link href="/" className="text-lime hover:underline">
               Hier hochladen
             </Link>{" "}
             — sonst fehlen Biomarker-Daten bei der Box-Empfehlung.
@@ -196,53 +214,13 @@ export default function ProfilePage() {
           </Link>
           <Button type="submit" size="lg" block className="md:w-auto md:flex-none">
             Weiter zur Anamnese
-            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
+            <ArrowRight
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={1.6}
+            />
           </Button>
         </StepActions>
       </form>
     </StepFrame>
-  );
-}
-
-function NumberCard({
-  icon: Icon,
-  accent,
-  label,
-  unit,
-  value,
-  onChange,
-  placeholder,
-}: {
-  icon: typeof Cake;
-  accent: string;
-  label: string;
-  unit: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder: string;
-}) {
-  return (
-    <label className="hairline rounded-xl bg-bone p-4 flex items-center gap-3 cursor-text hover:border-moss transition-colors">
-      <span
-        aria-hidden
-        className={`w-10 h-10 rounded-lg flex items-center justify-center ${accent}`}
-      >
-        <Icon className="w-5 h-5" strokeWidth={1.5} />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="text-xs text-mist">{label}</div>
-        <div className="flex items-baseline gap-1.5">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className="w-full font-mono text-2xl tabular-nums text-ink bg-transparent focus:outline-none focus:ring-0 placeholder:text-mist/60"
-          />
-          <span className="text-xs text-mist font-mono shrink-0">{unit}</span>
-        </div>
-      </div>
-    </label>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, Check } from "lucide-react";
+import { Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type MultiSelectChipsProps = {
@@ -9,7 +9,6 @@ type MultiSelectChipsProps = {
   onChange: (v: string[]) => void;
   options: string[];
   searchable?: boolean;
-  /** Caps selection (soft — blocks additional clicks when reached). */
   max?: number;
   cols?: 1 | 2 | 3;
   ariaLabel?: string;
@@ -54,7 +53,7 @@ export function MultiSelectChips({
       {searchable && (
         <div className="relative mb-3">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-mist"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash"
             strokeWidth={1.5}
           />
           <input
@@ -62,7 +61,7 @@ export function MultiSelectChips({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Suchen …"
-            className="w-full h-11 pl-9 pr-3 text-sm bg-paper hairline shadow-soft rounded-xl"
+            className="w-full h-11 pl-9 pr-3 text-sm rounded-xl border border-steel bg-onyx text-pearl placeholder:text-ash focus:border-lime focus:outline-none"
           />
         </div>
       )}
@@ -78,25 +77,25 @@ export function MultiSelectChips({
               disabled={disabled}
               aria-pressed={active}
               className={cn(
-                "text-left px-4 py-3.5 rounded-xl text-sm transition-all flex items-center justify-between gap-2 active:scale-[0.98]",
+                "text-left px-4 py-3.5 rounded-xl text-sm transition-all duration-300 flex items-center justify-between gap-2 active:scale-[0.98]",
                 active
-                  ? "bg-ink text-bone border border-ink shadow-soft"
+                  ? "border border-lime bg-lime/10 text-lime shadow-glow-lime"
                   : disabled
-                    ? "bg-paper hairline text-mist cursor-not-allowed opacity-60"
-                    : "bg-paper hairline shadow-soft text-ink hover:bg-bone-2",
+                    ? "border border-steel bg-onyx text-ash opacity-60 cursor-not-allowed"
+                    : "border border-steel bg-onyx text-silver hover:border-iron hover:text-pearl",
               )}
             >
               <span>{opt}</span>
-              {active && <Check className="w-4 h-4 shrink-0" strokeWidth={1.5} />}
+              {active && <Check className="w-4 h-4 shrink-0" strokeWidth={2} />}
             </button>
           );
         })}
         {filtered.length === 0 && (
-          <p className="text-sm text-mist col-span-full">Nichts gefunden.</p>
+          <p className="text-sm text-ash col-span-full">Nichts gefunden.</p>
         )}
       </div>
       {typeof max === "number" && (
-        <p className="mt-2 text-xs text-mist font-mono">
+        <p className="mt-2 text-xs text-ash font-mono">
           {values.length} / {max}
         </p>
       )}

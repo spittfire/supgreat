@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Loader2, CheckCircle2 } from "lucide-react";
+import { Logo } from "./Logo";
 
 const MESSAGES = [
-  "Lese deinen Bluttest …",
-  "Extrahiere Biomarker …",
-  "Vergleiche mit Referenzwerten …",
-  "Erstelle dein Protokoll …",
+  "Lese deinen Bluttest",
+  "Extrahiere Biomarker",
+  "Vergleiche mit Referenzwerten",
+  "Erstelle dein Protokoll",
 ];
 
 type LoadingAnalysisProps = {
-  /** Called when the fake work is done. */
   onDone?: () => void;
-  /** Total duration before onDone fires, in ms. */
   durationMs?: number;
 };
 
@@ -33,30 +33,46 @@ export function LoadingAnalysis({ onDone, durationMs = 3800 }: LoadingAnalysisPr
 
   return (
     <div className="flex flex-col items-center gap-10">
-      <div className="relative w-24 h-24" aria-hidden>
-        <span className="absolute inset-0 rounded-full border border-line" />
-        <span className="absolute inset-0 rounded-full border border-moss animate-ping opacity-60" />
-        <span className="absolute inset-3 rounded-full bg-moss/10" />
-        <span className="absolute inset-6 rounded-full bg-moss animate-pulse" />
+      {/* Animated dual-ring with glow */}
+      <div className="relative h-36 w-36 md:h-44 md:w-44">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-lime/25 blur-3xl rounded-full"
+        />
+        <div className="absolute inset-0 rounded-full border border-steel" />
+        <div
+          className="absolute inset-0 rounded-full border-2 border-transparent border-t-lime animate-spin"
+          style={{ animationDuration: "2s" }}
+        />
+        <div className="absolute inset-4 rounded-full border border-steel" />
+        <div
+          className="absolute inset-4 rounded-full border border-transparent border-t-lime/60 animate-spin"
+          style={{ animationDuration: "3s", animationDirection: "reverse" }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Logo className="h-8 md:h-10 w-auto text-lime" />
+        </div>
       </div>
-      <p
-        key={idx}
-        className="font-mono text-sm tracking-wide text-mist animate-[fadeIn_400ms_ease]"
-      >
-        {MESSAGES[idx]}
-      </p>
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(4px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
+
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-[11px] uppercase tracking-[0.24em] text-silver font-mono">
+          Analyse läuft
+        </div>
+        <div
+          key={idx}
+          className="font-display italic text-2xl md:text-3xl text-pearl animate-[fadeIn_400ms_ease]"
+        >
+          {MESSAGES[idx]} …
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 text-xs text-silver font-mono">
+        <CheckCircle2 className="h-4 w-4 text-lime" strokeWidth={1.6} />
+        <span>Dokument erkannt</span>
+        <span className="text-steel">·</span>
+        <Loader2 className="h-4 w-4 text-lime animate-spin" strokeWidth={1.6} />
+        <span>Biomarker werden extrahiert</span>
+      </div>
     </div>
   );
 }

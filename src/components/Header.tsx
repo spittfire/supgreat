@@ -8,21 +8,41 @@ type HeaderProps = {
 };
 
 export function Header({ currentStep, totalSteps = 8 }: HeaderProps) {
-  const showProgress = typeof currentStep === "number" && currentStep > 1;
+  const showProgress = typeof currentStep === "number";
   return (
-    <header className="w-full sticky top-0 z-20 bg-bone/80 backdrop-blur-md">
-      <div className="mx-auto w-full max-w-6xl px-4 md:px-10 py-4 flex items-center justify-between">
-        <Link href="/" aria-label="Zur Startseite" className="text-ink">
+    <header className="sticky top-0 z-30 w-full backdrop-blur-xl bg-carbon/70 border-b border-steel">
+      <div className="mx-auto max-w-6xl px-4 md:px-10 h-16 flex items-center justify-between gap-4">
+        <Link
+          href="/"
+          aria-label="Zur Startseite"
+          className="text-lime transition-transform hover:scale-[1.03]"
+        >
           <Logo className="h-5 md:h-6 w-auto" />
         </Link>
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-brand-amber animate-pulse" />
-          <span className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-mist font-mono">
-            Longevity Lab
-          </span>
+
+        {showProgress && (
+          <div className="hidden md:flex flex-1 items-center justify-center">
+            <ProgressBar current={currentStep!} total={totalSteps} />
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 text-[11px] tracking-[0.24em] uppercase text-silver font-mono">
+          {showProgress ? (
+            <span className="text-pearl">
+              <span className="text-lime">{String(currentStep).padStart(2, "0")}</span>
+              <span className="text-ash"> / {String(totalSteps).padStart(2, "0")}</span>
+            </span>
+          ) : (
+            <span>Longevity Lab</span>
+          )}
         </div>
       </div>
-      {showProgress && <ProgressBar current={currentStep!} total={totalSteps} />}
+
+      {showProgress && (
+        <div className="md:hidden px-4 pb-2 flex justify-center">
+          <ProgressBar current={currentStep!} total={totalSteps} />
+        </div>
+      )}
     </header>
   );
 }

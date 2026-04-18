@@ -7,23 +7,30 @@ type ProgressBarProps = {
 };
 
 export function ProgressBar({ current, total, className }: ProgressBarProps) {
-  const pct = Math.min(100, Math.max(0, ((current - 1) / Math.max(1, total - 1)) * 100));
   return (
     <div
-      className={cn("w-full h-1 bg-bone-2 relative", className)}
+      className={cn("flex items-center gap-1.5", className)}
       role="progressbar"
       aria-valuemin={1}
       aria-valuemax={total}
       aria-valuenow={current}
       aria-label="Fortschritt"
     >
-      <div
-        className="absolute inset-y-0 left-0 transition-[width] duration-500 ease-out"
-        style={{
-          width: `${pct}%`,
-          background: "linear-gradient(90deg, #C4964A 0%, #8FA68E 55%, #2F3E32 100%)",
-        }}
-      />
+      {Array.from({ length: total }).map((_, i) => {
+        const step = i + 1;
+        const state = step < current ? "done" : step === current ? "active" : "upcoming";
+        return (
+          <span
+            key={i}
+            className={cn(
+              "h-[2px] w-6 md:w-10 rounded-full transition-all duration-500",
+              state === "done" && "bg-pearl/40",
+              state === "active" && "bg-lime shadow-glow-lime",
+              state === "upcoming" && "bg-iron",
+            )}
+          />
+        );
+      })}
     </div>
   );
 }

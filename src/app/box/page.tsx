@@ -1,19 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, CalendarCheck, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarCheck, ShoppingBag, Sparkles } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
+import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { PillBox } from "@/components/PillBox";
 import { SupplementCard } from "@/components/SupplementCard";
+import { PRODUCT_BY_ID } from "@/lib/products";
 import type { Recommendation } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 
+function getProductPrice(id: string, subscription: boolean): number {
+  const p = PRODUCT_BY_ID.get(id);
+  if (!p) return 0;
+  return subscription ? p.price_subscription : p.price_single;
+}
+
 export default function BoxPage() {
-  const router = useRouter();
   const analysis = useFlowStore((s) => s.analysis);
   const profile = useFlowStore((s) => s.profile);
   const health = useFlowStore((s) => s.health);
@@ -31,9 +38,7 @@ export default function BoxPage() {
 
   const requestRecommendation = useCallback(async () => {
     if (!profile || !health || !lifestyle) {
-      setError(
-        "Es fehlen Daten (Profil, Anamnese oder Lifestyle). Bitte Schritte vorher abschließen.",
-      );
+      setError("Es fehlen Daten. Bitte vorige Schritte abschließen.");
       return;
     }
     setLoading(true);
@@ -62,7 +67,6 @@ export default function BoxPage() {
     }
   }, [analysis, profile, health, lifestyle, setRecommendation]);
 
-  // Kick off on mount only if we don't already have a recommendation.
   useEffect(() => {
     if (!recommendation && !loading && profile && health && lifestyle) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -75,7 +79,7 @@ export default function BoxPage() {
     return (
       <StepFrame
         step={7}
-        label="Box"
+        label="Schritt 07 · Box"
         title={<>Uns fehlen noch Angaben.</>}
         sub="Bitte den Fragebogen vorher abschließen — die Box stellen wir erst daraus zusammen."
       >
@@ -95,11 +99,11 @@ export default function BoxPage() {
     return (
       <StepFrame
         step={7}
-        label="Box"
+        label="Schritt 07 · Box"
         title={<>Wir stellen deine Box zusammen …</>}
-        sub="Matching gegen Biomarker, Anamnese und Lifestyle. Gleich geht es weiter."
+        sub="Matching gegen Biomarker, Anamnese und Lifestyle."
       >
-        <div className="py-12 flex flex-col items-center">
+        <div className="py-10 flex flex-col items-center">
           <LoadingAnalysis durationMs={100000} />
         </div>
         {error && <p className="text-sm text-coral text-center mt-4">{error}</p>}
@@ -108,23 +112,25 @@ export default function BoxPage() {
   }
 
   const supplements = recommendation.supplements;
+  const monthlyPrice = supplements.reduce((s, r) => s + getProductPrice(r.id, true), 0);
+  const oneTimePrice = supplements.reduce((s, r) => s + getProductPrice(r.id, false), 0);
 
   return (
     <StepFrame
       step={7}
-      label="Deine Box"
+      label="Schritt 07 · Deine Box"
       title={
         <>
-          Deine persönliche SUPGREAT Box,
+          <span className="italic text-silver">Zusammengestellt für</span>
           <br />
-          <span className="italic">{profile.first_name}</span>.
+          <span className="text-lime">{profile.first_name}.</span>
         </>
       }
-      sub="Zusammengestellt auf Basis deines Bluttests, deiner Anamnese und 20 Lifestyle-Signalen."
+      sub="Basierend auf deinem Bluttest, deiner Anamnese und 20 Lifestyle-Signalen."
     >
       {supplements.length === 0 ? (
-        <div className="hairline rounded-lg p-6 bg-bone-2/60">
-          <p className="text-ink">{recommendation.overall_assessment}</p>
+        <div className="rounded-2xl border border-steel bg-onyx p-6">
+          <p className="text-pearl">{recommendation.overall_assessment}</p>
           <div className="mt-6">
             <Link href="/checkout">
               <Button>Trotzdem Beratung anfragen</Button>
@@ -133,15 +139,12 @@ export default function BoxPage() {
         </div>
       ) : (
         <>
-          {/* Pillbox */}
           <PillBox supplements={supplements} />
 
           {/* Overall assessment */}
-          <div className="mt-8 hairline rounded-lg p-5 md:p-6 bg-bone-2/60">
-            <div className="text-xs uppercase tracking-wide text-mist font-mono">
-              Gesamtbild
-            </div>
-            <p className="mt-2 text-ink leading-relaxed">
+          <div className="mt-10 rounded-2xl border border-steel bg-onyx p-6 md:p-8">
+            <Eyebrow>Gesamtbild</Eyebrow>
+            <p className="mt-4 text-pearl leading-relaxed text-lg">
               {recommendation.overall_assessment}
             </p>
           </div>
@@ -153,97 +156,103 @@ export default function BoxPage() {
             ))}
           </div>
 
-          {/* Pricing */}
-          <div className="mt-12 hairline rounded-lg p-6 md:p-8 bg-bone">
-            <div className="flex items-baseline justify-between gap-4 flex-wrap">
+          {/* Price ribbon */}
+          <div className="mt-16 relative overflow-hidden rounded-3xl border border-lime/30 bg-gradient-to-br from-lime/10 via-onyx to-onyx p-6 md:p-10 shadow-glow-soft">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-radial-lime opacity-60"
+            />
+            <div className="relative grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <div className="text-xs uppercase tracking-wide text-mist font-mono">
-                  Deine Box
-                </div>
-                <div className="font-display text-3xl md:text-4xl leading-tight tracking-tight mt-1">
-                  {supplements.length} Supplements · personalisiert
-                </div>
+                <Eyebrow>Deine Box</Eyebrow>
+                <h2 className="mt-4 font-display text-4xl md:text-5xl leading-tight text-pearl">
+                  Alles auf <span className="italic text-lime">einen Klick</span>.
+                </h2>
+                <p className="mt-4 text-silver leading-relaxed">
+                  {supplements.length} Präparate, monatlich gepackt, direkt nach Hause.
+                  Kostenloser Versand, monatlich kündbar.
+                </p>
               </div>
-              <div className="text-right">
-                <div className="font-mono text-3xl text-ink tabular-nums">
-                  {supplements
-                    .reduce((s, p) => s + getProductPrice(p.id, true), 0)
-                    .toFixed(2)
-                    .replace(".", ",")}{" "}
-                  €
-                </div>
-                <div className="text-xs text-mist">
-                  pro Monat im Abo · −15 % ggü. Einmalkauf
-                </div>
-              </div>
-            </div>
 
-            <div className="grid sm:grid-cols-2 gap-3 mt-6">
-              <Link href="/checkout?plan=once">
-                <Button variant="secondary" className="w-full">
-                  <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-                  Einmal bestellen
-                </Button>
-              </Link>
-              <Link href="/checkout?plan=subscription">
-                <Button className="w-full">
-                  Im Abo sparen
-                  <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
-                </Button>
-              </Link>
+              <div className="space-y-3">
+                <Link
+                  href="/checkout?plan=subscription"
+                  className="group flex items-center justify-between rounded-2xl bg-lime p-5 md:p-6 text-carbon hover:bg-lime-2 hover:shadow-glow-lime transition-all active:scale-[0.99]"
+                >
+                  <div className="text-left">
+                    <div className="text-[11px] uppercase tracking-[0.2em] opacity-70 font-medium">
+                      Im Abo sparen
+                    </div>
+                    <div className="font-mono text-3xl md:text-4xl font-medium mt-1">
+                      €{monthlyPrice.toFixed(0)}
+                    </div>
+                    <div className="text-sm opacity-70">pro Monat · 15% günstiger</div>
+                  </div>
+                  <ArrowRight
+                    className="h-6 w-6 transition-transform group-hover:translate-x-2"
+                    strokeWidth={1.8}
+                  />
+                </Link>
+
+                <Link
+                  href="/checkout?plan=once"
+                  className="group flex items-center justify-between rounded-2xl border border-steel bg-onyx p-5 md:p-6 hover:border-iron transition-all active:scale-[0.99]"
+                >
+                  <div className="text-left">
+                    <div className="text-[11px] uppercase tracking-[0.2em] text-silver font-medium">
+                      Einmalig
+                    </div>
+                    <div className="font-mono text-3xl text-pearl mt-1">
+                      €{oneTimePrice.toFixed(0)}
+                    </div>
+                  </div>
+                  <ArrowRight
+                    className="h-5 w-5 text-silver transition-transform group-hover:translate-x-1"
+                    strokeWidth={1.6}
+                  />
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Coaching upsell */}
-          <div className="mt-10 hairline rounded-lg p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="mt-10 rounded-2xl border border-steel bg-onyx p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
-              <CalendarCheck className="w-6 h-6 text-moss mt-1" strokeWidth={1.3} />
+              <CalendarCheck className="w-6 h-6 text-lime mt-1" strokeWidth={1.4} />
               <div>
-                <div className="font-medium text-ink">
+                <div className="font-medium text-pearl">
                   1:1 Coaching mit einem Longevity Coach
                 </div>
-                <p className="text-sm text-mist max-w-md mt-1">
-                  Vertiefende Analyse deiner Werte, Timing und Kombinationen — 30 Minuten.
+                <p className="text-sm text-silver mt-1 max-w-md">
+                  Vertiefende Analyse deiner Werte, Timing und Kombinationen — 30
+                  Minuten.
                 </p>
               </div>
             </div>
             <Link href="/checkout?plan=coaching" className="md:ml-auto">
-              <Button variant="secondary">Coaching buchen</Button>
+              <Button variant="secondary">
+                <Sparkles className="w-4 h-4" strokeWidth={1.5} />
+                Coaching buchen
+              </Button>
             </Link>
           </div>
         </>
       )}
 
-      <div className="pt-12 mt-12 hairline-b flex justify-between gap-3">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => {
-            router.push("/results");
-          }}
-        >
-          Zurück zum Dashboard
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            setRecommendation(null);
-            void requestRecommendation();
-          }}
-        >
-          Empfehlung neu berechnen
-        </Button>
-      </div>
+      <StepActions>
+        <Link href="/results" className="hidden md:inline-flex">
+          <Button type="button" variant="secondary">
+            <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+            Dashboard
+          </Button>
+        </Link>
+        <Link href="/checkout" className="w-full md:w-auto">
+          <Button size="lg" block>
+            <ShoppingBag className="w-5 h-5" strokeWidth={1.6} />
+            Zum Checkout
+          </Button>
+        </Link>
+      </StepActions>
     </StepFrame>
   );
-}
-
-// Resolve price from the product catalog (kept at the bottom so the page isolates
-// business-logic details from its layout).
-import { PRODUCT_BY_ID } from "@/lib/products";
-function getProductPrice(id: string, subscription: boolean): number {
-  const p = PRODUCT_BY_ID.get(id);
-  if (!p) return 0;
-  return subscription ? p.price_subscription : p.price_single;
 }

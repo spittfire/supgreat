@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  axes: ["opsz", "SOFT", "WONK"],
+  display: "swap",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,8 +28,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAFAF7",
-  colorScheme: "light",
+  themeColor: "#0A0B0D",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -33,9 +40,27 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="relative min-h-full flex flex-col bg-carbon text-pearl">
+        {/* Subtle radial highlight top */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 bg-radial-subtle"
+        />
+        {/* Amber pool bottom-right */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 bg-radial-amber"
+        />
+        {/* Grain texture overlay */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 bg-grain opacity-[0.035] mix-blend-overlay"
+        />
+
+        <div className="relative z-0 flex flex-col min-h-full">{children}</div>
+      </body>
     </html>
   );
 }

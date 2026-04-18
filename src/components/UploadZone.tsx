@@ -5,8 +5,8 @@ import {
   Camera,
   FileText,
   Image as ImageIcon,
-  ImagePlus,
   Plus,
+  Upload,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,21 @@ function humanSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function FormatChip({
+  icon: Icon,
+  label,
+}: {
+  icon: typeof FileText;
+  label: string;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-steel bg-graphite px-3 py-1.5 text-xs text-silver">
+      <Icon className="w-3.5 h-3.5 text-lime" strokeWidth={1.5} />
+      {label}
+    </span>
+  );
 }
 
 export function UploadZone({ files, onChange }: UploadZoneProps) {
@@ -91,7 +106,6 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
 
   return (
     <div className="w-full">
-      {/* Hidden inputs, shared between empty-state and non-empty-state */}
       <input
         id="supgreat-upload"
         ref={inputRef}
@@ -134,61 +148,59 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
             acceptMany(e.dataTransfer.files);
           }}
           className={cn(
-            "group block cursor-pointer select-none rounded-2xl p-8 md:p-10 transition-all shadow-soft",
+            "group relative block cursor-pointer select-none overflow-hidden rounded-3xl border-2 border-dashed p-10 md:p-14 transition-all duration-500",
             dragOver
-              ? "ring-4 ring-brand-amber/40 bg-brand-amber/20"
-              : "bg-brand-amber/12 hover:bg-brand-amber/20 hover:shadow-pop",
+              ? "border-lime bg-graphite"
+              : "border-steel bg-onyx hover:border-lime hover:bg-graphite",
           )}
-          style={{
-            backgroundImage:
-              "radial-gradient(110% 120% at 0% 0%, rgba(196,150,74,0.25) 0%, rgba(196,150,74,0.06) 55%, rgba(255,255,255,0) 100%)",
-          }}
         >
-          <div className="flex flex-col items-center text-center gap-5">
-            <span
-              aria-hidden
-              className="w-20 h-20 rounded-3xl bg-brand-amber text-bone flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform"
+          {/* Glow sweep on hover */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-radial-lime opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+          />
+
+          <div className="relative flex flex-col items-center text-center">
+            <div
+              className={cn(
+                "mb-6 rounded-2xl border p-4 transition-all duration-500",
+                dragOver
+                  ? "border-lime bg-lime/10 shadow-glow-lime"
+                  : "border-steel bg-graphite group-hover:border-lime group-hover:shadow-glow-lime",
+              )}
             >
-              <ImagePlus className="w-9 h-9" strokeWidth={1.4} />
-            </span>
-            <div>
-              <p className="text-ink text-xl md:text-2xl font-semibold tracking-tight">
-                Bluttest hochladen
-              </p>
-              <p className="text-sm text-ink/60 mt-1.5">
-                PDF oder Fotos · mehrere möglich · tippe oder ziehe hierher
-              </p>
+              <Upload className="h-8 w-8 text-lime" strokeWidth={1.4} />
             </div>
-            <div className="flex gap-2 flex-wrap justify-center">
-              <span className="inline-flex items-center gap-1.5 text-xs text-ink/70 bg-bone px-3 py-1.5 rounded-full shadow-soft">
-                <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
-                PDF
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs text-ink/70 bg-bone px-3 py-1.5 rounded-full shadow-soft">
-                <ImageIcon className="w-3.5 h-3.5" strokeWidth={1.5} />
-                JPG · PNG · HEIC
-              </span>
+            <h3 className="font-display text-2xl md:text-3xl text-pearl mb-2">
+              Bluttest hochladen
+            </h3>
+            <p className="text-silver mb-6">
+              PDF oder Foto · mehrere möglich · Drag &amp; Drop oder antippen
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <FormatChip icon={FileText} label="PDF" />
+              <FormatChip icon={ImageIcon} label="JPG · PNG · HEIC" />
               <button
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   cameraRef.current?.click();
                 }}
-                className="md:hidden inline-flex items-center gap-1.5 text-xs text-bone bg-ink px-3 py-1.5 rounded-full shadow-soft active:scale-95 transition-transform"
+                className="md:hidden inline-flex items-center gap-1.5 rounded-full border border-lime bg-lime/10 px-3 py-1.5 text-xs text-lime active:scale-95 transition-transform"
               >
                 <Camera className="w-3.5 h-3.5" strokeWidth={1.5} />
-                Kamera öffnen
+                Kamera
               </button>
             </div>
           </div>
         </label>
       ) : (
-        <div className="rounded-2xl bg-paper shadow-soft hairline p-4 md:p-5">
+        <div className="rounded-3xl border border-steel bg-onyx p-4 md:p-5">
           <div className="flex items-baseline justify-between mb-3">
-            <div className="text-sm font-medium text-ink">
+            <div className="text-sm font-medium text-pearl">
               {files.length} Datei{files.length === 1 ? "" : "en"} bereit
             </div>
-            <div className="text-xs text-mist font-mono">
+            <div className="text-xs text-ash font-mono">
               {humanSize(totalBytes)} · max. {MAX_FILES}
             </div>
           </div>
@@ -196,9 +208,9 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
             {files.map((file, idx) => (
               <li
                 key={`${file.name}-${file.size}-${idx}`}
-                className="flex items-center gap-3 bg-bone rounded-xl hairline px-3 py-2.5"
+                className="flex items-center gap-3 rounded-xl border border-steel bg-graphite px-3 py-2.5"
               >
-                <span className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center bg-brand-amber/15 text-brand-amber">
+                <span className="shrink-0 w-9 h-9 rounded-lg border border-steel bg-onyx flex items-center justify-center text-lime">
                   {file.type === "application/pdf" ? (
                     <FileText className="w-4 h-4" strokeWidth={1.5} />
                   ) : (
@@ -206,15 +218,17 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm text-ink font-medium">{file.name}</div>
-                  <div className="text-xs text-mist font-mono">
+                  <div className="truncate text-sm text-pearl font-medium">
+                    {file.name}
+                  </div>
+                  <div className="text-xs text-ash font-mono">
                     {humanSize(file.size)}
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => removeAt(idx)}
-                  className="shrink-0 text-mist hover:text-coral w-9 h-9 rounded-lg flex items-center justify-center active:scale-95 transition-transform"
+                  className="shrink-0 text-ash hover:text-coral w-9 h-9 rounded-lg flex items-center justify-center active:scale-95 transition-transform"
                   aria-label={`„${file.name}" entfernen`}
                 >
                   <X className="w-4 h-4" strokeWidth={1.5} />
@@ -228,7 +242,7 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-ink bg-bone hairline rounded-xl px-4 py-3 hover:bg-bone-2 transition-colors active:scale-[0.98]"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-silver hover:text-pearl rounded-xl border border-steel bg-graphite hover:border-iron px-4 py-3 transition-all active:scale-[0.98]"
               >
                 <Plus className="w-4 h-4" strokeWidth={1.5} />
                 Weitere Datei
@@ -236,7 +250,7 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
               <button
                 type="button"
                 onClick={() => cameraRef.current?.click()}
-                className="md:hidden flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-bone bg-ink rounded-xl px-4 py-3 active:scale-[0.98] shadow-soft"
+                className="md:hidden flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-lime rounded-xl border border-lime/40 bg-lime/10 px-4 py-3 active:scale-[0.98]"
               >
                 <Camera className="w-4 h-4" strokeWidth={1.5} />
                 Kamera

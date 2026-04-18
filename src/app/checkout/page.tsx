@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, Lock, ShoppingBag } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
+import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { TextField } from "@/components/ui/TextField";
 import { PRODUCT_BY_ID } from "@/lib/products";
 import { useFlowStore } from "@/store/flow-store";
 
 const PLANS = {
-  once: { label: "Einmalkauf", factor: 1.0, discount: 0, subscription: false },
-  subscription: { label: "Abo (monatlich)", factor: 1.0, discount: 0.15, subscription: true },
-  coaching: { label: "Coaching + Box", factor: 1.0, discount: 0, subscription: false, addOn: 79 },
+  once: { label: "Einmalkauf", discount: 0, subscription: false },
+  subscription: { label: "Abo · monatlich", discount: 0.15, subscription: true },
+  coaching: { label: "Coaching + Box", discount: 0, subscription: false, addOn: 79 },
 } as const;
 
 type PlanKey = keyof typeof PLANS;
@@ -60,9 +62,14 @@ export default function CheckoutPage() {
     return (
       <StepFrame
         step={8}
-        label="Bestätigung"
-        title={<>Danke, {name || "wir sind dran"}!</>}
-        sub="Wir melden uns per E-Mail mit dem Zahlungs-Link und der Versandbestätigung, sobald der Checkout freigeschaltet ist."
+        label="Schritt 08 · Bestätigung"
+        title={
+          <>
+            <span className="italic text-silver">Danke,</span>{" "}
+            <span className="text-lime">{name || "dir"}.</span>
+          </>
+        }
+        sub="Wir melden uns per E-Mail mit Zahlungs-Link und Versandbestätigung, sobald der Checkout freigeschaltet ist."
       >
         <Link href="/">
           <Button>Zurück zum Anfang</Button>
@@ -74,51 +81,55 @@ export default function CheckoutPage() {
   return (
     <StepFrame
       step={8}
-      label="Checkout"
+      label="Schritt 08 · Checkout"
       title={
         <>
-          Fast geschafft, {profile?.first_name || "du"}.
+          Fast geschafft,{" "}
+          <span className="italic text-lime">{profile?.first_name || "du"}</span>.
         </>
       }
-      sub="Wähle dein Modell, wir reservieren deine Box. Die eigentliche Zahlung kommt in der nächsten Iteration über den Shopify-Checkout."
+      sub="Wähle dein Modell — die eigentliche Zahlung kommt in der nächsten Iteration über Shopify."
     >
-      <form onSubmit={onSubmit} className="grid md:grid-cols-5 gap-8">
+      <form onSubmit={onSubmit} className="grid md:grid-cols-5 gap-6 md:gap-8">
         <section className="md:col-span-3 space-y-6">
-          <div role="radiogroup" aria-label="Plan" className="grid gap-3">
-            {(Object.keys(PLANS) as PlanKey[]).map((key) => {
-              const info = PLANS[key];
-              const active = plan === key;
-              return (
-                <button
-                  type="button"
-                  key={key}
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() => setPlan(key)}
-                  className={`text-left p-5 rounded-lg transition-colors ${
-                    active
-                      ? "bg-ink text-bone border border-ink"
-                      : "hairline hover:bg-bone-2 text-ink"
-                  }`}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <div className="font-medium">{info.label}</div>
-                    {"discount" in info && info.discount > 0 && (
-                      <span className="text-xs font-mono opacity-80">
-                        −{Math.round(info.discount * 100)} %
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-sm opacity-80 mt-1">
-                    {key === "subscription"
-                      ? "Automatische Nachlieferung, jederzeit kündbar."
-                      : key === "coaching"
-                        ? "30-Min-Gespräch mit einem Longevity Coach + Box."
-                        : "Einmalige Lieferung, kein Abo."}
-                  </div>
-                </button>
-              );
-            })}
+          <div>
+            <Eyebrow>Modell wählen</Eyebrow>
+            <div role="radiogroup" aria-label="Plan" className="mt-4 grid gap-3">
+              {(Object.keys(PLANS) as PlanKey[]).map((key) => {
+                const info = PLANS[key];
+                const active = plan === key;
+                return (
+                  <button
+                    type="button"
+                    key={key}
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setPlan(key)}
+                    className={`text-left p-5 rounded-2xl border transition-all duration-300 ${
+                      active
+                        ? "border-lime bg-lime/10 text-pearl shadow-glow-lime"
+                        : "border-steel bg-onyx text-silver hover:border-iron hover:text-pearl"
+                    }`}
+                  >
+                    <div className="flex items-baseline justify-between">
+                      <div className="font-medium text-pearl">{info.label}</div>
+                      {"discount" in info && info.discount > 0 && (
+                        <span className="text-xs font-mono text-lime">
+                          −{Math.round(info.discount * 100)} %
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-silver mt-1">
+                      {key === "subscription"
+                        ? "Automatische Nachlieferung, jederzeit kündbar."
+                        : key === "coaching"
+                          ? "30-Min-Gespräch mit einem Longevity Coach + Box."
+                          : "Einmalige Lieferung, kein Abo."}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
@@ -149,60 +160,71 @@ export default function CheckoutPage() {
         </section>
 
         <aside className="md:col-span-2">
-          <div className="hairline rounded-lg p-5 md:p-6 bg-bone-2/60 sticky top-6">
-            <div className="text-xs uppercase tracking-wide text-mist font-mono">
-              Zusammenfassung
-            </div>
-            <ul className="mt-4 space-y-2 text-sm">
+          <div className="rounded-3xl border border-steel bg-onyx p-6 md:p-7 sticky top-24">
+            <Eyebrow>Zusammenfassung</Eyebrow>
+            <ul className="mt-5 space-y-2 text-sm">
               {recommendation?.supplements.map((r) => (
                 <li key={r.id} className="flex justify-between gap-3">
-                  <span className="text-ink">{r.name}</span>
-                  <span className="font-mono text-mist tabular-nums">
+                  <span className="text-pearl">{r.name}</span>
+                  <span className="font-mono text-silver tabular-nums">
+                    €
                     {(PLANS[plan].subscription
                       ? (PRODUCT_BY_ID.get(r.id)?.price_subscription ?? 0)
                       : (PRODUCT_BY_ID.get(r.id)?.price_single ?? 0)
-                    )
-                      .toFixed(2)
-                      .replace(".", ",")}{" "}
-                    €
+                    ).toFixed(0)}
                   </span>
                 </li>
               ))}
               {summary.addOn > 0 && (
                 <li className="flex justify-between gap-3">
-                  <span className="text-ink">Coaching-Termin</span>
-                  <span className="font-mono text-mist tabular-nums">
-                    {summary.addOn.toFixed(2).replace(".", ",")} €
+                  <span className="text-pearl">Coaching-Termin</span>
+                  <span className="font-mono text-silver tabular-nums">
+                    €{summary.addOn.toFixed(0)}
                   </span>
                 </li>
               )}
             </ul>
-            <div className="hairline-b my-4" />
+            <div className="border-t border-steel my-5" />
             <div className="flex justify-between items-baseline">
-              <div className="text-sm text-mist">Gesamt</div>
-              <div className="font-mono text-2xl tabular-nums">
-                {summary.total.toFixed(2).replace(".", ",")} €
+              <div className="text-[11px] uppercase tracking-[0.2em] text-silver">
+                Gesamt
+              </div>
+              <div className="font-mono text-3xl text-pearl tabular-nums">
+                €{summary.total.toFixed(0)}
               </div>
             </div>
             <Button type="submit" size="lg" className="w-full mt-5">
               <Lock className="w-4 h-4" strokeWidth={1.5} />
               Bestellung reservieren
             </Button>
-            <p className="text-xs text-mist mt-3 text-center">
-              Noch keine Zahlung. Du erhältst eine Bestätigung per E-Mail.
+            <p className="text-xs text-ash mt-3 text-center">
+              Noch keine Zahlung. Bestätigung per E-Mail.
             </p>
           </div>
         </aside>
       </form>
 
-      <div className="mt-12 pt-6 hairline-b">
-        <Link href="/box">
+      <StepActions>
+        <Link href="/box" className="hidden md:inline-flex">
           <Button type="button" variant="secondary">
             <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
             Zurück zur Box
           </Button>
         </Link>
-      </div>
+        <div className="hidden md:block md:ml-auto">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={(e) => {
+              const form = (e.currentTarget as HTMLButtonElement).closest("form");
+              form?.requestSubmit();
+            }}
+          >
+            <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
+            Reservieren
+          </Button>
+        </div>
+      </StepActions>
     </StepFrame>
   );
 }

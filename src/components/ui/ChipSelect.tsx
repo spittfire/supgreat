@@ -6,7 +6,6 @@ type ChipSelectProps<T extends string> = {
   value: T | null | undefined;
   onChange: (v: T) => void;
   options: readonly T[];
-  /** Render columns on larger screens. */
   cols?: 1 | 2 | 3 | 4;
   ariaLabel?: string;
 };
@@ -38,10 +37,10 @@ export function ChipSelect<T extends string>({
             aria-checked={active}
             onClick={() => onChange(opt)}
             className={cn(
-              "text-left px-4 py-3.5 rounded-xl transition-all text-sm active:scale-[0.98]",
+              "text-left px-4 py-3.5 rounded-xl text-sm transition-all duration-300 active:scale-[0.98]",
               active
-                ? "bg-ink text-bone border border-ink shadow-soft"
-                : "bg-paper hairline shadow-soft hover:bg-bone-2 text-ink",
+                ? "border border-lime bg-lime/10 text-lime shadow-glow-lime"
+                : "border border-steel bg-onyx text-silver hover:border-iron hover:text-pearl",
             )}
           >
             {opt}

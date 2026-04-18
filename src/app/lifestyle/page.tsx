@@ -17,43 +17,33 @@ import { BLOCK_META } from "@/lib/visuals";
 
 type Draft = Partial<Lifestyle>;
 
-const BLOCK_COLORS: Record<string, { active: string; dim: string; ring: string }> = {
-  "brand-amber": {
-    active: "bg-brand-amber text-bone",
-    dim: "bg-brand-amber/15 text-brand-amber",
-    ring: "ring-brand-amber/30",
-  },
-  sage: {
-    active: "bg-sage text-bone",
-    dim: "bg-sage/15 text-sage",
-    ring: "ring-sage/30",
-  },
-  moss: {
-    active: "bg-moss text-bone",
-    dim: "bg-moss/10 text-moss",
-    ring: "ring-moss/30",
-  },
-  coral: {
-    active: "bg-coral text-bone",
-    dim: "bg-coral/10 text-coral",
-    ring: "ring-coral/30",
-  },
-};
-
 function Question({
+  number,
   label,
   children,
   hint,
 }: {
+  number: number;
   label: string;
   children: React.ReactNode;
   hint?: string;
 }) {
   return (
-    <div className="space-y-3">
-      <div>
-        <div className="text-base md:text-lg text-ink font-medium leading-snug">{label}</div>
-        {hint && <p className="text-xs text-mist mt-1">{hint}</p>}
+    <div className="rounded-2xl border border-steel bg-onyx p-5 md:p-6">
+      <div className="flex items-start gap-4 mb-5">
+        <span
+          aria-hidden
+          className="shrink-0 w-10 h-10 rounded-xl border border-steel bg-graphite flex items-center justify-center font-mono text-sm text-lime"
+        >
+          {String(number).padStart(2, "0")}
+        </span>
+        <div className="pt-1">
+          <div className="text-[11px] uppercase tracking-[0.2em] text-silver font-medium mb-1">
+            Frage {number}
+          </div>
+          <h3 className="text-lg md:text-xl text-pearl leading-snug">{label}</h3>
+          {hint && <p className="text-xs text-ash mt-1">{hint}</p>}
+        </div>
       </div>
       {children}
     </div>
@@ -106,25 +96,25 @@ export default function LifestylePage() {
     if (block > 0) setBlock((b) => b - 1);
   };
 
-  const currentBlock = BLOCK_META[block];
-  const currentColor = BLOCK_COLORS[currentBlock.accent];
+  const current = BLOCK_META[block];
+  const blockLetter = String.fromCharCode(65 + block);
 
   return (
     <StepFrame
       step={5}
-      label={`Lifestyle · ${block + 1} / ${BLOCK_META.length} · ${currentBlock.label}`}
+      label={`Schritt 05 · Lifestyle · Block ${blockLetter} / E`}
       title={
         <>
-          Dein <span className="italic text-brand-amber">Alltag</span>.
+          <span className="italic text-silver">Block {blockLetter}:</span>{" "}
+          <span className="text-pearl">{current.label}</span>.
         </>
       }
       sub="Je ehrlicher du antwortest, desto präziser wird deine Box. 20 Fragen, ca. 4 Minuten."
     >
       <div className="max-w-2xl">
-        {/* Bunte Block-Indikatoren mit Icons */}
-        <div className="grid grid-cols-5 gap-2 mb-10" role="tablist" aria-label="Lifestyle-Block">
+        {/* Block tabs */}
+        <div className="flex gap-2 mb-10" role="tablist" aria-label="Lifestyle-Block">
           {BLOCK_META.map((meta, i) => {
-            const color = BLOCK_COLORS[meta.accent];
             const Icon = meta.icon;
             const isActive = i === block;
             const isDone = i < block;
@@ -133,41 +123,27 @@ export default function LifestylePage() {
                 key={meta.label}
                 role="tab"
                 aria-selected={isActive}
-                className={`flex flex-col items-center gap-1.5 rounded-lg py-2 transition-all ${
+                className={`flex-1 flex flex-col items-center gap-1.5 rounded-xl border py-2.5 transition-all duration-300 ${
                   isActive
-                    ? `${color.active} ring-2 ${color.ring} ring-offset-2 ring-offset-bone`
+                    ? "border-lime bg-lime/10 text-lime shadow-glow-lime"
                     : isDone
-                      ? color.dim
-                      : "bg-bone-2/60 text-mist"
+                      ? "border-steel bg-graphite text-pearl/70"
+                      : "border-steel bg-onyx text-ash"
                 }`}
               >
                 <Icon className="w-4 h-4" strokeWidth={1.5} />
-                <span className="text-[10px] font-medium">{meta.label}</span>
+                <span className="text-[10px] font-medium font-mono uppercase tracking-wider">
+                  {String.fromCharCode(65 + i)}
+                </span>
               </div>
             );
           })}
         </div>
 
-        {/* Aktiver Block-Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <span
-            aria-hidden
-            className={`w-11 h-11 rounded-lg flex items-center justify-center ${currentColor.active}`}
-          >
-            <currentBlock.icon className="w-5 h-5" strokeWidth={1.5} />
-          </span>
-          <div>
-            <div className="text-xs uppercase tracking-wide text-mist font-mono">
-              Block {block + 1} von {BLOCK_META.length}
-            </div>
-            <div className="text-xl font-medium text-ink">{currentBlock.label}</div>
-          </div>
-        </div>
-
-        <div className="space-y-10">
+        <div className="space-y-4">
           {block === 0 && (
             <>
-              <Question label="1. Welche Ernährungsweise beschreibt dich am besten?">
+              <Question number={1} label="Welche Ernährungsweise beschreibt dich am besten?">
                 <ChipSelect
                   value={d.diet ?? null}
                   onChange={(v) => update("diet", v)}
@@ -175,7 +151,7 @@ export default function LifestylePage() {
                   cols={2}
                 />
               </Question>
-              <Question label="2. Wie viele Mahlzeiten isst du pro Tag im Durchschnitt?">
+              <Question number={2} label="Wie viele Mahlzeiten pro Tag im Durchschnitt?">
                 <ChipSelect
                   value={d.meals_per_day ?? null}
                   onChange={(v) => update("meals_per_day", v)}
@@ -183,7 +159,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="3. Wie oft isst du Fisch pro Woche?">
+              <Question number={3} label="Wie oft isst du Fisch pro Woche?">
                 <ChipSelect
                   value={d.fish_per_week ?? null}
                   onChange={(v) => update("fish_per_week", v)}
@@ -191,21 +167,15 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="4. Wie oft isst du verarbeitete Lebensmittel? (Fast Food, Fertigprodukte, Süßigkeiten)">
+              <Question number={4} label="Wie oft isst du verarbeitete Lebensmittel?" hint="Fast Food, Fertigprodukte, Süßigkeiten">
                 <ChipSelect
                   value={d.processed_food ?? null}
                   onChange={(v) => update("processed_food", v)}
-                  options={[
-                    "Täglich",
-                    "Mehrmals pro Woche",
-                    "1× pro Woche",
-                    "Selten",
-                    "Nie",
-                  ]}
+                  options={["Täglich", "Mehrmals pro Woche", "1× pro Woche", "Selten", "Nie"]}
                   cols={2}
                 />
               </Question>
-              <Question label="5. Wie viel Gemüse und Obst isst du am Tag? (Hand-Portionen)">
+              <Question number={5} label="Wie viel Gemüse und Obst am Tag?" hint="Hand-Portionen">
                 <ChipSelect
                   value={d.veg_fruit ?? null}
                   onChange={(v) => update("veg_fruit", v)}
@@ -218,7 +188,7 @@ export default function LifestylePage() {
 
           {block === 1 && (
             <>
-              <Question label="6. Wie viel Wasser trinkst du pro Tag?">
+              <Question number={6} label="Wie viel Wasser trinkst du pro Tag?">
                 <ChipSelect
                   value={d.water ?? null}
                   onChange={(v) => update("water", v)}
@@ -226,7 +196,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="7. Wie viele Tassen Kaffee pro Tag?">
+              <Question number={7} label="Wie viele Tassen Kaffee pro Tag?">
                 <ChipSelect
                   value={d.coffee ?? null}
                   onChange={(v) => update("coffee", v)}
@@ -234,7 +204,7 @@ export default function LifestylePage() {
                   cols={4}
                 />
               </Question>
-              <Question label="8. Wie oft trinkst du Alkohol?">
+              <Question number={8} label="Wie oft trinkst du Alkohol?">
                 <ChipSelect
                   value={d.alcohol ?? null}
                   onChange={(v) => update("alcohol", v)}
@@ -248,7 +218,7 @@ export default function LifestylePage() {
                   cols={2}
                 />
               </Question>
-              <Question label="9. Rauchst du?">
+              <Question number={9} label="Rauchst du?">
                 <ChipSelect
                   value={d.smoking ?? null}
                   onChange={(v) => update("smoking", v)}
@@ -261,7 +231,7 @@ export default function LifestylePage() {
 
           {block === 2 && (
             <>
-              <Question label="10. Wie viele Stunden schläfst du im Durchschnitt pro Nacht?">
+              <Question number={10} label="Wie viele Stunden Schlaf pro Nacht?">
                 <ChipSelect
                   value={d.sleep_hours ?? null}
                   onChange={(v) => update("sleep_hours", v)}
@@ -269,7 +239,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="11. Wie würdest du deine Schlafqualität bewerten?">
+              <Question number={11} label="Wie würdest du deine Schlafqualität bewerten?">
                 <ScaleInput
                   value={d.sleep_quality ?? 3}
                   onChange={(v) => update("sleep_quality", v)}
@@ -277,7 +247,7 @@ export default function LifestylePage() {
                   rightLabel="sehr gut"
                 />
               </Question>
-              <Question label="12. Wachst du nachts häufig auf?">
+              <Question number={12} label="Wachst du nachts häufig auf?">
                 <ChipSelect
                   value={d.night_wake ?? null}
                   onChange={(v) => update("night_wake", v)}
@@ -285,7 +255,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="13. Wie fit fühlst du dich morgens beim Aufstehen?">
+              <Question number={13} label="Wie fit fühlst du dich morgens?">
                 <ScaleInput
                   value={d.morning_energy ?? 3}
                   onChange={(v) => update("morning_energy", v)}
@@ -298,7 +268,7 @@ export default function LifestylePage() {
 
           {block === 3 && (
             <>
-              <Question label="14. Wie oft treibst du Sport pro Woche? (mind. 30 Min)">
+              <Question number={14} label="Wie oft Sport pro Woche?" hint="mind. 30 Min">
                 <ChipSelect
                   value={d.sport_frequency ?? null}
                   onChange={(v) => update("sport_frequency", v)}
@@ -306,7 +276,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="15. Welche Art von Sport überwiegt?" hint="Mehrfachauswahl möglich.">
+              <Question number={15} label="Welche Art von Sport überwiegt?" hint="Mehrfachauswahl möglich">
                 <MultiSelectChips
                   values={d.sport_type ?? []}
                   onChange={(v) => update("sport_type", v)}
@@ -314,7 +284,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="16. Wie viele Stunden am Tag sitzt du (Beruf + Freizeit)?">
+              <Question number={16} label="Wie viele Stunden sitzt du pro Tag?" hint="Beruf + Freizeit">
                 <ChipSelect
                   value={d.sitting_hours ?? null}
                   onChange={(v) => update("sitting_hours", v)}
@@ -322,7 +292,7 @@ export default function LifestylePage() {
                   cols={3}
                 />
               </Question>
-              <Question label="17. Wie hoch ist dein Stresslevel im Alltag?">
+              <Question number={17} label="Wie hoch ist dein Stresslevel im Alltag?">
                 <ScaleInput
                   value={d.stress_level ?? 3}
                   onChange={(v) => update("stress_level", v)}
@@ -335,7 +305,7 @@ export default function LifestylePage() {
 
           {block === 4 && (
             <>
-              <Question label="18. Wie oft verbringst du Zeit im Freien / in der Natur?">
+              <Question number={18} label="Wie oft verbringst du Zeit im Freien?">
                 <ChipSelect
                   value={d.outdoor_time ?? null}
                   onChange={(v) => update("outdoor_time", v)}
@@ -343,7 +313,7 @@ export default function LifestylePage() {
                   cols={2}
                 />
               </Question>
-              <Question label="19. Wie oft fühlst du dich energielos oder antriebsarm?">
+              <Question number={19} label="Wie oft fühlst du dich energielos?">
                 <ScaleInput
                   value={d.energy_low ?? 3}
                   onChange={(v) => update("energy_low", v)}
@@ -352,8 +322,9 @@ export default function LifestylePage() {
                 />
               </Question>
               <Question
-                label="20. Hast du konkrete Beschwerden, die dich aktuell stören?"
-                hint="Mehrfachauswahl möglich. Wähle bewusst was passt — oder lasse leer, wenn nichts zutrifft."
+                number={20}
+                label="Hast du konkrete Beschwerden, die dich stören?"
+                hint="Mehrfachauswahl möglich. Lasse leer, wenn nichts zutrifft."
               >
                 <MultiSelectChips
                   values={d.symptoms ?? []}
@@ -395,7 +366,10 @@ export default function LifestylePage() {
             className="md:w-auto md:flex-none"
           >
             {block < BLOCK_META.length - 1 ? "Weiter" : "Ergebnisse anzeigen"}
-            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
+            <ArrowRight
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={1.6}
+            />
           </Button>
         </StepActions>
       </div>

@@ -23,21 +23,17 @@ export function ScaleInput({
 }: ScaleInputProps) {
   const dots: number[] = [];
   for (let i = min; i <= max; i++) dots.push(i);
-  // Gradient-Farben: 1 coral → 3 amber → 5 sage/moss (visuelle Stufung)
-  const colors = [
-    "bg-coral text-bone",
-    "bg-coral/80 text-bone",
-    "bg-brand-amber text-bone",
-    "bg-sage text-bone",
-    "bg-moss text-bone",
-  ];
-
   return (
-    <div aria-label={ariaLabel}>
-      <div className="flex items-center justify-between gap-2">
-        {dots.map((n, idx) => {
+    <div aria-label={ariaLabel} className="space-y-3">
+      {(leftLabel || rightLabel) && (
+        <div className="flex justify-between text-[11px] uppercase tracking-[0.2em] text-silver">
+          <span>{leftLabel}</span>
+          <span>{rightLabel}</span>
+        </div>
+      )}
+      <div className="flex items-center gap-2 md:gap-3">
+        {dots.map((n) => {
           const active = value === n;
-          const activeColor = colors[idx] ?? colors[colors.length - 1];
           return (
             <button
               type="button"
@@ -46,10 +42,10 @@ export function ScaleInput({
               aria-pressed={active}
               onClick={() => onChange(n)}
               className={cn(
-                "flex-1 h-12 rounded-lg text-sm font-mono transition-all",
+                "flex-1 h-14 rounded-xl font-mono text-lg transition-all duration-300 border",
                 active
-                  ? `${activeColor} border border-transparent scale-[1.02]`
-                  : "hairline text-ink hover:bg-bone-2",
+                  ? "border-lime bg-lime/10 text-lime shadow-glow-lime scale-[1.04]"
+                  : "border-steel bg-onyx text-silver hover:border-iron hover:text-pearl",
               )}
             >
               {n}
@@ -57,12 +53,6 @@ export function ScaleInput({
           );
         })}
       </div>
-      {(leftLabel || rightLabel) && (
-        <div className="mt-2 flex justify-between text-xs text-mist">
-          <span>{leftLabel}</span>
-          <span>{rightLabel}</span>
-        </div>
-      )}
     </div>
   );
 }

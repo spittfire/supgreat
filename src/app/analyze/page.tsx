@@ -7,6 +7,7 @@ import { AlertTriangle, CheckCircle2, FileSearch } from "lucide-react";
 import { Header } from "@/components/Header";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
 import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import type { Analysis } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 
@@ -81,88 +82,82 @@ export default function AnalyzePage() {
   return (
     <>
       <Header currentStep={2} />
-      <main className="flex-1">
-        <section className="mx-auto w-full max-w-3xl px-6 md:px-10 py-20 md:py-28 flex flex-col items-center text-center">
-          <p className="text-xs tracking-[0.2em] uppercase text-moss mb-6 font-mono">
-            Schritt 2 · Analyse
-          </p>
-
+      <main className="flex-1 relative">
+        <section className="mx-auto max-w-3xl px-4 md:px-10 py-20 md:py-32 flex flex-col items-center text-center min-h-[60vh] justify-center">
           {state === "working" && (
             <>
-              <h1 className="font-display text-4xl md:text-5xl leading-tight tracking-tight">
-                Wir lesen deinen Bluttest.
-              </h1>
-              <p className="mt-4 text-ink/70 max-w-prose">
-                {fileCount > 1
-                  ? `${fileCount} Dateien werden kombiniert analysiert.`
-                  : fileCount === 1
-                    ? `Datei: ${filesMeta[0].name}`
-                    : "Deine Datei wird verarbeitet."}
-              </p>
+              <Eyebrow>Schritt 02 · Analyse</Eyebrow>
               <div className="mt-14">
                 <LoadingAnalysis durationMs={15000} />
               </div>
+              <p className="mt-10 text-sm text-silver">
+                {fileCount > 1
+                  ? `${fileCount} Dateien werden kombiniert analysiert.`
+                  : fileCount === 1
+                    ? filesMeta[0].name
+                    : "Datei wird verarbeitet."}
+              </p>
             </>
           )}
 
           {state === "done" && (
             <>
-              <div className="w-14 h-14 rounded-full bg-moss/10 flex items-center justify-center text-moss mb-5">
-                <CheckCircle2 strokeWidth={1.3} />
+              <div className="w-16 h-16 rounded-full bg-lime/10 border border-lime/30 flex items-center justify-center text-lime mb-6 shadow-glow-lime">
+                <CheckCircle2 strokeWidth={1.3} className="w-7 h-7" />
               </div>
-              <h1 className="font-display text-4xl md:text-5xl leading-tight tracking-tight">
-                Erkennung abgeschlossen.
+              <Eyebrow>Erkennung abgeschlossen</Eyebrow>
+              <h1 className="mt-4 font-display text-4xl md:text-5xl leading-tight tracking-tight text-pearl">
+                <span className="italic text-silver">Extrahiert:</span>{" "}
+                <span className="text-lime">{markerCount} Biomarker</span>
               </h1>
-              <p className="mt-4 text-ink/70 max-w-prose">
-                <strong className="font-mono text-ink">{markerCount}</strong>{" "}
-                Biomarker aus {fileCount} Datei{fileCount === 1 ? "" : "en"} erkannt.
-                Weiter zum Profil …
+              <p className="mt-5 text-silver max-w-prose">
+                Aus {fileCount} Datei{fileCount === 1 ? "" : "en"}. Weiter zum Profil …
               </p>
             </>
           )}
 
           {state === "no-markers" && (
             <>
-              <div className="w-14 h-14 rounded-full bg-brand-amber/15 flex items-center justify-center text-brand-amber mb-5">
-                <FileSearch strokeWidth={1.3} />
+              <div className="w-16 h-16 rounded-full bg-amber/10 border border-amber/30 flex items-center justify-center text-amber mb-6">
+                <FileSearch strokeWidth={1.3} className="w-7 h-7" />
               </div>
-              <h1 className="font-display text-4xl md:text-5xl leading-tight tracking-tight">
-                Keine Werte eindeutig erkannt.
+              <Eyebrow>Keine Werte erkannt</Eyebrow>
+              <h1 className="mt-4 font-display text-4xl md:text-5xl leading-tight tracking-tight text-pearl">
+                <span className="italic text-silver">Hmm.</span> Das Foto war schwer zu
+                lesen.
               </h1>
-              <p className="mt-4 text-ink/70 max-w-prose">
+              <p className="mt-5 text-silver max-w-prose">
                 {wasRawFound
-                  ? "Wir konnten zwar Zahlen lesen, aber keinem unserer bekannten Referenzmarker sicher zuordnen. Das Foto/PDF zeigt möglicherweise ein ungewöhnliches Labor-Layout oder Marker außerhalb unseres Katalogs."
-                  : "Die Dokumente scheinen keinen lesbaren deutschen Bluttest zu enthalten. Versuch ein schärferes Foto oder lade das PDF direkt hoch."}
+                  ? "Wir haben Zahlen gelesen, aber keinem unserer Referenzmarker eindeutig zugeordnet. Das Layout ist vermutlich ungewöhnlich."
+                  : "Die Dokumente scheinen keinen lesbaren deutschen Bluttest zu enthalten. Ein schärferes Foto oder PDF hilft."}
               </p>
               <div className="mt-10 flex gap-3 justify-center flex-wrap">
                 <Link href="/">
                   <Button variant="secondary">Andere Dateien hochladen</Button>
                 </Link>
                 <Link href="/profile">
-                  <Button>Ohne Bluttest weitermachen</Button>
+                  <Button>Ohne Bluttest weiter</Button>
                 </Link>
               </div>
-              <p className="text-xs text-mist mt-6">
-                Hinweis: Die Box kann auch rein auf Anamnese + Lifestyle-Fragebogen basieren.
-              </p>
             </>
           )}
 
           {state === "missing-file" && (
             <>
-              <h1 className="font-display text-4xl md:text-5xl leading-tight tracking-tight">
+              <Eyebrow>Session abgelaufen</Eyebrow>
+              <h1 className="mt-4 font-display text-4xl md:text-5xl leading-tight tracking-tight text-pearl">
                 Keine Datei gefunden.
               </h1>
-              <p className="mt-4 text-ink/70 max-w-prose">
-                Beim Seitenneuladen geht der Upload verloren. Bitte lade deinen Bluttest
-                erneut hoch.
+              <p className="mt-5 text-silver max-w-prose">
+                Beim Seitenneuladen geht der Upload verloren. Bitte lade deinen
+                Bluttest erneut hoch.
               </p>
               <div className="mt-10 flex gap-3 justify-center">
                 <Link href="/">
                   <Button>Zurück zum Upload</Button>
                 </Link>
                 <Link href="/profile">
-                  <Button variant="secondary">Ohne Bluttest weitermachen</Button>
+                  <Button variant="secondary">Ohne Bluttest weiter</Button>
                 </Link>
               </div>
             </>
@@ -170,14 +165,14 @@ export default function AnalyzePage() {
 
           {state === "error" && (
             <>
-              <div className="hairline rounded-lg p-5 bg-coral/10 flex items-start gap-3 text-left max-w-xl">
+              <div className="rounded-2xl border border-coral/40 bg-coral/5 p-5 flex items-start gap-3 text-left max-w-xl">
                 <AlertTriangle
                   className="w-5 h-5 text-coral shrink-0 mt-0.5"
                   strokeWidth={1.5}
                 />
-                <div className="text-sm text-ink/85">
-                  <div className="font-medium text-ink">Analyse fehlgeschlagen</div>
-                  <p className="mt-1">{error}</p>
+                <div className="text-sm text-pearl/90">
+                  <div className="font-medium text-coral">Analyse fehlgeschlagen</div>
+                  <p className="mt-1 text-silver">{error}</p>
                 </div>
               </div>
               <div className="mt-10 flex gap-3 justify-center">
@@ -185,7 +180,7 @@ export default function AnalyzePage() {
                   <Button variant="secondary">Zurück zum Upload</Button>
                 </Link>
                 <Link href="/profile">
-                  <Button>Ohne Bluttest weitermachen</Button>
+                  <Button>Ohne Bluttest weiter</Button>
                 </Link>
               </div>
             </>

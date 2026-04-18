@@ -25,6 +25,7 @@ import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
 import { CategoryGroup } from "@/components/CategoryGroup";
 import { Button } from "@/components/ui/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MultiSelectChips } from "@/components/ui/MultiSelectChips";
 import { TextArea } from "@/components/ui/TextField";
 import {
@@ -36,22 +37,17 @@ import {
 import { HealthSchema, type Health, type Pregnancy } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 
-type Accent = "moss" | "sage" | "brand-amber" | "coral";
-
-const CONDITION_GROUP_META: Record<
-  string,
-  { icon: LucideIcon; accent: Accent }
-> = {
-  "Herz-Kreislauf": { icon: HeartPulse, accent: "coral" },
-  Stoffwechsel: { icon: FlaskConical, accent: "brand-amber" },
-  Autoimmun: { icon: ShieldAlert, accent: "coral" },
-  "Hormonell (Frauen)": { icon: UserRound, accent: "coral" },
-  "Hormonell (Männer)": { icon: UserRound, accent: "sage" },
-  Psyche: { icon: Brain, accent: "moss" },
-  "Magen-Darm": { icon: Utensils, accent: "sage" },
-  "Niere & Leber": { icon: CircleDashed, accent: "brand-amber" },
-  "Knochen & Gelenke": { icon: Bone, accent: "sage" },
-  Sonstige: { icon: Sparkles, accent: "moss" },
+const CONDITION_GROUP_ICON: Record<string, LucideIcon> = {
+  "Herz-Kreislauf": HeartPulse,
+  Stoffwechsel: FlaskConical,
+  Autoimmun: ShieldAlert,
+  "Hormonell (Frauen)": UserRound,
+  "Hormonell (Männer)": UserRound,
+  Psyche: Brain,
+  "Magen-Darm": Utensils,
+  "Niere & Leber": CircleDashed,
+  "Knochen & Gelenke": Bone,
+  Sonstige: Sparkles,
 };
 
 const PREGNANCY_OPTIONS: { value: NonNullable<Pregnancy>; label: string }[] = [
@@ -60,6 +56,31 @@ const PREGNANCY_OPTIONS: { value: NonNullable<Pregnancy>; label: string }[] = [
   { value: "breastfeeding", label: "Stillend" },
   { value: "trying", label: "Kinderwunsch aktiv" },
 ];
+
+function SectionHeader({
+  icon: Icon,
+  title,
+  hint,
+}: {
+  icon: LucideIcon;
+  title: string;
+  hint?: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 mb-5">
+      <span
+        aria-hidden
+        className="shrink-0 w-10 h-10 rounded-xl border border-steel bg-graphite flex items-center justify-center text-lime"
+      >
+        <Icon className="w-5 h-5" strokeWidth={1.5} />
+      </span>
+      <div>
+        <h2 className="font-display text-2xl text-pearl leading-tight">{title}</h2>
+        {hint && <p className="text-xs text-ash mt-1">{hint}</p>}
+      </div>
+    </div>
+  );
+}
 
 export default function HealthPage() {
   const router = useRouter();
@@ -116,51 +137,47 @@ export default function HealthPage() {
   return (
     <StepFrame
       step={4}
-      label="Anamnese"
+      label="Schritt 04 · Anamnese"
       title={
         <>
-          Deine Gesundheit im <span className="italic text-coral">Überblick</span>.
+          Deine Gesundheit im{" "}
+          <span className="italic text-lime">Überblick</span>.
         </>
       }
       sub="Diese Angaben sind freiwillig. Sie helfen uns, Wechselwirkungen und Kontraindikationen auszuschließen. Keine Weitergabe an Dritte."
     >
-      <form onSubmit={onSubmit} className="space-y-14">
-        {/* Conditions */}
+      <form onSubmit={onSubmit} className="space-y-16">
+        {/* 4.1 Conditions */}
         <section>
           <SectionHeader
             icon={Stethoscope}
-            accent="coral"
-            title="Diagnostizierte Erkrankungen"
+            title="Erkrankungen"
             hint="Wir schließen damit riskante Kombinationen aus."
           />
-          <label className="inline-flex items-center gap-2 mt-1 cursor-pointer select-none text-sm">
+          <label className="inline-flex items-center gap-2 mb-4 cursor-pointer select-none text-sm text-silver">
             <input
               type="checkbox"
-              className="w-4 h-4 accent-moss"
+              className="w-4 h-4 accent-lime"
               checked={noConditions}
               onChange={(e) => {
                 setNoConditions(e.target.checked);
                 if (e.target.checked) setConditions([]);
               }}
             />
-            <span>Keine</span>
+            <span>Keine Erkrankungen</span>
           </label>
           {!noConditions && (
-            <div className="mt-4 space-y-2">
+            <div className="space-y-2">
               {CONDITION_GROUPS.map((group) => {
                 const selectedInGroup = conditions.filter((c) =>
                   group.items.includes(c),
                 );
-                const meta = CONDITION_GROUP_META[group.label] ?? {
-                  icon: Sparkles,
-                  accent: "moss" as Accent,
-                };
+                const icon = CONDITION_GROUP_ICON[group.label] ?? Sparkles;
                 return (
                   <CategoryGroup
                     key={group.label}
                     label={group.label}
-                    icon={meta.icon}
-                    accent={meta.accent}
+                    icon={icon}
                     selectedCount={selectedInGroup.length}
                     defaultOpen={selectedInGroup.length > 0}
                   >
@@ -177,12 +194,11 @@ export default function HealthPage() {
           )}
         </section>
 
-        {/* Surgeries */}
+        {/* 4.2 Surgeries */}
         <section>
           <SectionHeader
             icon={Bone}
-            accent="sage"
-            title="Operationen / Eingriffe"
+            title="Operationen"
             hint="Optional — hilft bei Langzeit-Empfehlungen."
           />
           <TextArea
@@ -193,12 +209,11 @@ export default function HealthPage() {
           />
         </section>
 
-        {/* Medications */}
+        {/* 4.3 Medications */}
         <section>
           <SectionHeader
             icon={Pill}
-            accent="brand-amber"
-            title="Aktuelle Medikamente"
+            title="Medikamente"
             hint="Wichtig für Wechselwirkungen."
           />
           <MultiSelectChips
@@ -210,7 +225,7 @@ export default function HealthPage() {
           />
           <div className="mt-4">
             <TextArea
-              label="Weitere Medikamente (optional)"
+              label="Weitere Medikamente"
               name="medications_freetext"
               value={medicationsFreetext}
               onChange={(e) => setMedicationsFreetext(e.target.value)}
@@ -219,13 +234,12 @@ export default function HealthPage() {
           </div>
         </section>
 
-        {/* Allergies */}
+        {/* 4.4 Allergies */}
         <section>
           <SectionHeader
             icon={Leaf}
-            accent="sage"
             title="Allergien & Unverträglichkeiten"
-            hint="Entscheidend bei Fischöl, Nuss-Produkten, Laktose-haltigen Kapseln."
+            hint="Entscheidend bei Fischöl, Nuss-Produkten, laktosehaltigen Kapseln."
           />
           <MultiSelectChips
             values={allergies}
@@ -236,12 +250,11 @@ export default function HealthPage() {
           />
         </section>
 
-        {/* Pregnancy */}
+        {/* 4.5 Pregnancy */}
         {showPregnancy && (
           <section>
             <SectionHeader
               icon={Baby}
-              accent="coral"
               title="Schwangerschaft / Stillzeit"
               hint="Einige Pflanzenstoffe sind in dieser Zeit kontraindiziert."
             />
@@ -255,10 +268,10 @@ export default function HealthPage() {
                     role="radio"
                     aria-checked={active}
                     onClick={() => setPregnancy(opt.value)}
-                    className={`px-4 py-3 text-sm rounded-lg transition-colors ${
+                    className={`px-4 py-3 text-sm rounded-xl border transition-all duration-300 ${
                       active
-                        ? "bg-coral text-bone border border-coral"
-                        : "hairline hover:bg-bone-2 text-ink"
+                        ? "border-lime bg-lime/10 text-lime shadow-glow-lime"
+                        : "border-steel bg-onyx text-silver hover:border-iron hover:text-pearl"
                     }`}
                   >
                     {opt.label}
@@ -269,11 +282,10 @@ export default function HealthPage() {
           </section>
         )}
 
-        {/* Current supplements */}
+        {/* 4.6 Current supplements */}
         <section>
           <SectionHeader
             icon={Sparkles}
-            accent="moss"
             title="Bereits eingenommene Supplements"
             hint="Damit wir keine Doppel-Empfehlung machen."
           />
@@ -297,43 +309,18 @@ export default function HealthPage() {
           </Link>
           <Button type="submit" size="lg" block className="md:w-auto md:flex-none">
             Weiter zum Lifestyle
-            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
+            <ArrowRight
+              className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+              strokeWidth={1.6}
+            />
           </Button>
         </StepActions>
+
+        {/* Eyebrow at very bottom — reassurance */}
+        <div className="pt-8 flex justify-center">
+          <Eyebrow>Freiwillig · Nicht weitergegeben</Eyebrow>
+        </div>
       </form>
     </StepFrame>
-  );
-}
-
-function SectionHeader({
-  icon: Icon,
-  accent,
-  title,
-  hint,
-}: {
-  icon: LucideIcon;
-  accent: Accent;
-  title: string;
-  hint?: string;
-}) {
-  const bg = {
-    moss: "bg-moss/10 text-moss",
-    sage: "bg-sage/15 text-sage",
-    "brand-amber": "bg-brand-amber/15 text-brand-amber",
-    coral: "bg-coral/10 text-coral",
-  }[accent];
-  return (
-    <div className="flex items-start gap-3 mb-4">
-      <span
-        aria-hidden
-        className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${bg}`}
-      >
-        <Icon className="w-5 h-5" strokeWidth={1.5} />
-      </span>
-      <div>
-        <h2 className="text-lg font-medium text-ink leading-tight">{title}</h2>
-        {hint && <p className="text-xs text-mist mt-0.5">{hint}</p>}
-      </div>
-    </div>
   );
 }

@@ -1,46 +1,40 @@
-import { ShieldCheck, Stethoscope, Sparkles } from "lucide-react";
+import { Gift, ShieldCheck, Stethoscope, type LucideIcon } from "lucide-react";
 
-const items = [
+const items: Array<{ icon: LucideIcon; title: string; text: string }> = [
   {
     icon: ShieldCheck,
-    label: "DSGVO-konform",
-    hint: "Deine Daten bleiben bei dir.",
-    bg: "bg-sage/15",
-    text: "text-sage",
+    title: "DSGVO-konform",
+    text: "Deine Daten bleiben bei dir.",
   },
   {
     icon: Stethoscope,
-    label: "Keine Diagnose",
-    hint: "Nur Orientierung — ersetzt keinen Arztbesuch.",
-    bg: "bg-coral/10",
-    text: "text-coral",
+    title: "Keine Diagnose",
+    text: "Nur Orientierung — ersetzt keinen Arztbesuch.",
   },
   {
-    icon: Sparkles,
-    label: "Kostenlos",
-    hint: "Analyse und Box-Empfehlung gratis.",
-    bg: "bg-brand-amber/15",
-    text: "text-brand-amber",
+    icon: Gift,
+    title: "Kostenlos",
+    text: "Analyse und Box-Empfehlung gratis.",
   },
 ];
 
 export function TrustBadges() {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-      {items.map(({ icon: Icon, label, hint, bg, text }) => (
+      {items.map(({ icon: Icon, title, text }) => (
         <li
-          key={label}
-          className="flex items-start gap-4 hairline rounded-xl bg-bone p-5"
+          key={title}
+          className="group flex items-start gap-4 rounded-2xl border border-steel bg-onyx p-5 transition-all duration-500 hover:border-iron hover:bg-graphite"
         >
           <span
             aria-hidden
-            className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-lg ${bg} ${text}`}
+            className="shrink-0 rounded-xl border border-steel bg-graphite p-2.5 transition-all group-hover:border-lime/40"
           >
-            <Icon strokeWidth={1.5} className="w-5 h-5" />
+            <Icon className="w-5 h-5 text-lime" strokeWidth={1.5} />
           </span>
           <div>
-            <div className="font-medium text-ink">{label}</div>
-            <div className="text-sm text-mist leading-snug mt-0.5">{hint}</div>
+            <div className="font-medium text-pearl">{title}</div>
+            <div className="mt-1 text-sm text-silver leading-snug">{text}</div>
           </div>
         </li>
       ))}
