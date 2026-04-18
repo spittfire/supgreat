@@ -63,7 +63,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-steel flex flex-wrap items-center justify-between gap-3 text-xs text-ash">
           <span>© {year} SUPGREAT</span>
-          <span className="font-mono">Longevity Lab · v0.2</span>
+          <span className="font-mono">Longevity Lab · v0.2 · by KG</span>
         </div>
       </div>
     </footer>
