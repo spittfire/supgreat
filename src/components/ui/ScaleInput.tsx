@@ -23,11 +23,21 @@ export function ScaleInput({
 }: ScaleInputProps) {
   const dots: number[] = [];
   for (let i = min; i <= max; i++) dots.push(i);
+  // Gradient-Farben: 1 coral → 3 amber → 5 sage/moss (visuelle Stufung)
+  const colors = [
+    "bg-coral text-bone",
+    "bg-coral/80 text-bone",
+    "bg-brand-amber text-bone",
+    "bg-sage text-bone",
+    "bg-moss text-bone",
+  ];
+
   return (
     <div aria-label={ariaLabel}>
       <div className="flex items-center justify-between gap-2">
-        {dots.map((n) => {
+        {dots.map((n, idx) => {
           const active = value === n;
+          const activeColor = colors[idx] ?? colors[colors.length - 1];
           return (
             <button
               type="button"
@@ -36,9 +46,9 @@ export function ScaleInput({
               aria-pressed={active}
               onClick={() => onChange(n)}
               className={cn(
-                "flex-1 h-12 rounded-lg text-sm font-mono transition-colors",
+                "flex-1 h-12 rounded-lg text-sm font-mono transition-all",
                 active
-                  ? "bg-ink text-bone border border-ink"
+                  ? `${activeColor} border border-transparent scale-[1.02]`
                   : "hairline text-ink hover:bg-bone-2",
               )}
             >

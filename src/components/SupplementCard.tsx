@@ -1,4 +1,4 @@
-import { AlertTriangle, Clock, Pill as PillIcon } from "lucide-react";
+import { AlertTriangle, Clock, Moon, Pill as PillIcon, Sun, Utensils } from "lucide-react";
 import type { SupplementRec } from "@/lib/types";
 
 type SupplementCardProps = {
@@ -6,12 +6,39 @@ type SupplementCardProps = {
   index: number;
 };
 
+function TimingBadge({ timing }: { timing: string }) {
+  const t = timing.toLowerCase();
+  const meta = t.includes("abend")
+    ? { icon: Moon, bg: "bg-moss/10", text: "text-moss" }
+    : t.includes("mahlzeit")
+      ? { icon: Utensils, bg: "bg-brand-amber/15", text: "text-brand-amber" }
+      : t.includes("2x")
+        ? { icon: Clock, bg: "bg-coral/10", text: "text-coral" }
+        : { icon: Sun, bg: "bg-brand-amber/15", text: "text-brand-amber" };
+  const Icon = meta.icon;
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs ${meta.bg} ${meta.text}`}
+    >
+      <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+      {timing}
+    </span>
+  );
+}
+
 export function SupplementCard({ rec, index }: SupplementCardProps) {
   return (
-    <article className="hairline rounded-lg p-5 md:p-6 bg-bone">
+    <article
+      className="hairline rounded-xl p-5 md:p-6 bg-bone relative overflow-hidden"
+    >
+      <span
+        aria-hidden
+        className="absolute top-0 left-0 h-full w-1"
+        style={{ background: rec.category_color }}
+      />
       <div className="flex items-start gap-4">
         <div
-          className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-bone"
+          className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-bone shadow-[inset_0_-2px_0_rgba(0,0,0,0.12)]"
           style={{ background: rec.category_color }}
           aria-hidden
         >
@@ -24,12 +51,9 @@ export function SupplementCard({ rec, index }: SupplementCardProps) {
             </h3>
             <span className="text-xs font-mono text-mist shrink-0">#{index + 1}</span>
           </div>
-          <div className="flex gap-4 mt-1 text-sm text-mist font-mono">
-            <span>{rec.dosage}</span>
-            <span className="inline-flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" strokeWidth={1.5} />
-              {rec.timing}
-            </span>
+          <div className="flex flex-wrap gap-2 mt-2 items-center">
+            <span className="text-sm font-mono text-ink">{rec.dosage}</span>
+            <TimingBadge timing={rec.timing} />
           </div>
         </div>
       </div>

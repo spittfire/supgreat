@@ -1,5 +1,6 @@
 import type { Biomarker } from "@/lib/types";
 import { StatusBadge } from "@/components/ui/Badge";
+import { CATEGORY_ICON, CATEGORY_STYLE } from "@/lib/visuals";
 
 type BiomarkerCardProps = {
   marker: Biomarker;
@@ -64,14 +65,30 @@ function RangeBar({ marker }: { marker: Biomarker }) {
 }
 
 export function BiomarkerCard({ marker }: BiomarkerCardProps) {
+  const catStyle = CATEGORY_STYLE[marker.category] ?? CATEGORY_STYLE["Sonstige"];
+  const CatIcon = CATEGORY_ICON[marker.category];
   return (
-    <div className="hairline rounded-lg p-4 md:p-5 bg-bone">
+    <div className="hairline rounded-xl p-4 md:p-5 bg-bone relative overflow-hidden">
+      <span
+        aria-hidden
+        className={`absolute top-0 left-0 h-full w-1 ${catStyle.dot}`}
+      />
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="text-sm text-ink/80 truncate">{marker.name}</div>
-          <div className="font-mono text-2xl mt-1 tabular-nums text-ink">
-            {marker.value}
-            <span className="text-sm text-mist ml-1.5 font-sans">{marker.unit}</span>
+        <div className="flex items-start gap-3 min-w-0">
+          {CatIcon && (
+            <span
+              aria-hidden
+              className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${catStyle.bg} ${catStyle.text}`}
+            >
+              <CatIcon className="w-4 h-4" strokeWidth={1.5} />
+            </span>
+          )}
+          <div className="min-w-0">
+            <div className="text-sm text-ink/80 truncate">{marker.name}</div>
+            <div className="font-mono text-2xl mt-1 tabular-nums text-ink">
+              {marker.value}
+              <span className="text-sm text-mist ml-1.5 font-sans">{marker.unit}</span>
+            </div>
           </div>
         </div>
         <StatusBadge status={marker.status} />

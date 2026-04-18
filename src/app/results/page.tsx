@@ -11,6 +11,7 @@ import { ProfileSummary } from "@/components/ProfileSummary";
 import { lifestylePenalty } from "@/lib/lifestyle-triggers";
 import { computeLongevityScore } from "@/lib/optimal-ranges";
 import type { Biomarker } from "@/lib/types";
+import { CATEGORY_ICON, CATEGORY_STYLE } from "@/lib/visuals";
 import { useFlowStore } from "@/store/flow-store";
 
 export default function ResultsPage() {
@@ -84,24 +85,36 @@ export default function ResultsPage() {
       {hasAnalysis && (
         <div className="mt-14 space-y-12">
           <h2 className="font-display text-2xl md:text-3xl">Deine Biomarker</h2>
-          {Array.from(grouped.entries()).map(([cat, markers]) => (
-            <section key={cat}>
-              <div className="flex items-baseline justify-between mb-4">
-                <h3 className="text-sm tracking-wide uppercase text-mist font-mono">
-                  {cat}
-                </h3>
-                <span className="text-xs text-mist font-mono">
-                  {markers.filter((m) => m.status === "optimal").length} / {markers.length}{" "}
-                  optimal
-                </span>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                {markers.map((m) => (
-                  <BiomarkerCard key={m.key} marker={m} />
-                ))}
-              </div>
-            </section>
-          ))}
+          {Array.from(grouped.entries()).map(([cat, markers]) => {
+            const style = CATEGORY_STYLE[cat] ?? CATEGORY_STYLE["Sonstige"];
+            const Icon = CATEGORY_ICON[cat];
+            const optCount = markers.filter((m) => m.status === "optimal").length;
+            return (
+              <section key={cat}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    {Icon && (
+                      <span
+                        aria-hidden
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center ${style.bg} ${style.text}`}
+                      >
+                        <Icon className="w-5 h-5" strokeWidth={1.5} />
+                      </span>
+                    )}
+                    <h3 className="text-base font-medium text-ink">{cat}</h3>
+                  </div>
+                  <span className="text-xs text-mist font-mono">
+                    {optCount} / {markers.length} optimal
+                  </span>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {markers.map((m) => (
+                    <BiomarkerCard key={m.key} marker={m} />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       )}
 

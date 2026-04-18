@@ -12,10 +12,32 @@ import { ScaleInput } from "@/components/ui/ScaleInput";
 import { DIETS, SPORT_TYPES, SYMPTOMS } from "@/lib/lists";
 import { LifestyleSchema, type Lifestyle } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
+import { BLOCK_META } from "@/lib/visuals";
 
 type Draft = Partial<Lifestyle>;
 
-const BLOCKS = ["Ernährung", "Flüssigkeit", "Schlaf", "Bewegung", "Mental"] as const;
+const BLOCK_COLORS: Record<string, { active: string; dim: string; ring: string }> = {
+  "brand-amber": {
+    active: "bg-brand-amber text-bone",
+    dim: "bg-brand-amber/15 text-brand-amber",
+    ring: "ring-brand-amber/30",
+  },
+  sage: {
+    active: "bg-sage text-bone",
+    dim: "bg-sage/15 text-sage",
+    ring: "ring-sage/30",
+  },
+  moss: {
+    active: "bg-moss text-bone",
+    dim: "bg-moss/10 text-moss",
+    ring: "ring-moss/30",
+  },
+  coral: {
+    active: "bg-coral text-bone",
+    dim: "bg-coral/10 text-coral",
+    ring: "ring-coral/30",
+  },
+};
 
 function Question({
   label,
@@ -56,7 +78,7 @@ export default function LifestylePage() {
 
   const nextBlock = () => {
     setError(null);
-    if (block < BLOCKS.length - 1) {
+    if (block < BLOCK_META.length - 1) {
       setBlock((b) => b + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -83,28 +105,62 @@ export default function LifestylePage() {
     if (block > 0) setBlock((b) => b - 1);
   };
 
+  const currentBlock = BLOCK_META[block];
+  const currentColor = BLOCK_COLORS[currentBlock.accent];
+
   return (
     <StepFrame
       step={5}
-      label={`Lifestyle · ${block + 1} / ${BLOCKS.length}`}
+      label={`Lifestyle · ${block + 1} / ${BLOCK_META.length} · ${currentBlock.label}`}
       title={
         <>
-          Dein <span className="italic">Alltag</span>.
+          Dein <span className="italic text-brand-amber">Alltag</span>.
         </>
       }
       sub="Je ehrlicher du antwortest, desto präziser wird deine Box. 20 Fragen, ca. 4 Minuten."
     >
       <div className="max-w-2xl">
-        <div className="flex gap-2 mb-10" role="tablist" aria-label="Lifestyle-Block">
-          {BLOCKS.map((name, i) => (
-            <div
-              key={name}
-              className={`flex-1 h-1 rounded-full transition-colors ${
-                i <= block ? "bg-moss" : "bg-line"
-              }`}
-              aria-label={`${i + 1}. ${name}${i === block ? " (aktuell)" : ""}`}
-            />
-          ))}
+        {/* Bunte Block-Indikatoren mit Icons */}
+        <div className="grid grid-cols-5 gap-2 mb-10" role="tablist" aria-label="Lifestyle-Block">
+          {BLOCK_META.map((meta, i) => {
+            const color = BLOCK_COLORS[meta.accent];
+            const Icon = meta.icon;
+            const isActive = i === block;
+            const isDone = i < block;
+            return (
+              <div
+                key={meta.label}
+                role="tab"
+                aria-selected={isActive}
+                className={`flex flex-col items-center gap-1.5 rounded-lg py-2 transition-all ${
+                  isActive
+                    ? `${color.active} ring-2 ${color.ring} ring-offset-2 ring-offset-bone`
+                    : isDone
+                      ? color.dim
+                      : "bg-bone-2/60 text-mist"
+                }`}
+              >
+                <Icon className="w-4 h-4" strokeWidth={1.5} />
+                <span className="text-[10px] font-medium">{meta.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Aktiver Block-Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <span
+            aria-hidden
+            className={`w-11 h-11 rounded-lg flex items-center justify-center ${currentColor.active}`}
+          >
+            <currentBlock.icon className="w-5 h-5" strokeWidth={1.5} />
+          </span>
+          <div>
+            <div className="text-xs uppercase tracking-wide text-mist font-mono">
+              Block {block + 1} von {BLOCK_META.length}
+            </div>
+            <div className="text-xl font-medium text-ink">{currentBlock.label}</div>
+          </div>
         </div>
 
         <div className="space-y-10">
@@ -326,7 +382,7 @@ export default function LifestylePage() {
             </Button>
           )}
           <Button type="button" size="lg" onClick={nextBlock}>
-            {block < BLOCKS.length - 1 ? "Weiter" : "Ergebnisse anzeigen"}
+            {block < BLOCK_META.length - 1 ? "Weiter" : "Ergebnisse anzeigen"}
             <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
           </Button>
         </div>
