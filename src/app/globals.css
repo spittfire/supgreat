@@ -25,7 +25,7 @@
   --color-glass-2: rgba(255, 255, 255, 0.08);
 
   /* ── Type ─────────────────────────────────────────── */
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-inter);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains);
 
@@ -92,17 +92,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Display type (Fraunces) ──────────────────────── */
+/* ── Display type (Inter, tight) ──────────────────── */
 .font-display {
-  font-family: var(--font-display), ui-serif, Georgia, serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.035em;
   font-weight: 600;
 }
 
 .font-display-italic {
-  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   font-style: italic;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
 }
 
 .font-mono {
