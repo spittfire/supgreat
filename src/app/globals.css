@@ -198,20 +198,42 @@ select {
   color: var(--color-pearl);
 }
 
-/* Mobile sticky bottom-CTA container */
-.mobile-cta-dock {
-  position: sticky;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(10, 11, 13, 0) 0%,
-    rgba(10, 11, 13, 0.85) 38%,
-    rgba(10, 11, 13, 0.98) 100%
-  );
-  backdrop-filter: blur(14px);
-  padding-top: 24px;
-  padding-bottom: env(safe-area-inset-bottom, 16px);
-  z-index: 10;
+/* ── Step-Footer Dock ─────────────────────────────
+   On mobile: sticky at viewport bottom, full-bleed gradient
+   so the fade runs edge-to-edge (no hard cut).
+   On ≥md: flat inline row with hairline separator above. */
+.step-actions-dock {
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .step-actions-dock {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    /* Break out of the page's horizontal padding so the fade kisses
+       the viewport edges. Assumes parent has px-4 (= 1rem). */
+    margin-inline: -1rem;
+    padding: 22px 1rem calc(env(safe-area-inset-bottom, 12px) + 12px);
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 11, 13, 0) 0%,
+      rgba(10, 11, 13, 0.78) 32%,
+      rgba(10, 11, 13, 0.96) 72%,
+      #0a0b0d 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(42, 46, 54, 0.55);
+  }
+}
+
+@media (min-width: 768px) {
+  .step-actions-dock {
+    margin-top: 3.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-steel);
+  }
 }
 
 /* Scrollbar — dark mode styling */
