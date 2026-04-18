@@ -22,7 +22,12 @@ export default function CheckoutPage() {
   const profile = useFlowStore((s) => s.profile);
   const setStep = useFlowStore((s) => s.setStep);
 
-  const [plan, setPlan] = useState<PlanKey>("subscription");
+  const [plan, setPlan] = useState<PlanKey>(() => {
+    if (typeof window === "undefined") return "subscription";
+    const sp = new URL(window.location.href).searchParams.get("plan");
+    if (sp === "once" || sp === "subscription" || sp === "coaching") return sp;
+    return "subscription";
+  });
   const [email, setEmail] = useState("");
   const [name, setName] = useState(profile?.first_name ?? "");
   const [zip, setZip] = useState("");
@@ -30,10 +35,6 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setStep(8);
-    if (typeof window !== "undefined") {
-      const sp = new URL(window.location.href).searchParams.get("plan");
-      if (sp === "once" || sp === "subscription" || sp === "coaching") setPlan(sp);
-    }
   }, [setStep]);
 
   const summary = useMemo(() => {

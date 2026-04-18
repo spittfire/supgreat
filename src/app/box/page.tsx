@@ -65,6 +65,7 @@ export default function BoxPage() {
   // Kick off on mount only if we don't already have a recommendation.
   useEffect(() => {
     if (!recommendation && !loading && profile && health && lifestyle) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       void requestRecommendation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
