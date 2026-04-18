@@ -10,10 +10,13 @@ import { cn } from "@/lib/utils";
 
 export function LandingForm() {
   const router = useRouter();
-  const { uploadedFile, setFile, consentGiven, setConsent } = useFlowStore();
+  const files = useFlowStore((s) => s.uploadedFiles);
+  const setFiles = useFlowStore((s) => s.setFiles);
+  const consentGiven = useFlowStore((s) => s.consentGiven);
+  const setConsent = useFlowStore((s) => s.setConsent);
   const [submitting, setSubmitting] = useState(false);
 
-  const canSubmit = !!uploadedFile && consentGiven && !submitting;
+  const canSubmit = files.length > 0 && consentGiven && !submitting;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +27,7 @@ export function LandingForm() {
 
   return (
     <form onSubmit={onSubmit} className="w-full space-y-8">
-      <UploadZone file={uploadedFile} onFile={setFile} />
+      <UploadZone files={files} onChange={setFiles} />
 
       <label
         className={cn(
