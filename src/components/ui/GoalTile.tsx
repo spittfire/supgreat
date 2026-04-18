@@ -63,13 +63,13 @@ export function GoalTile({
       disabled={disabled}
       aria-pressed={active}
       className={cn(
-        "group text-left rounded-xl p-4 transition-all relative",
-        "hairline bg-bone",
+        "group text-left rounded-2xl p-4 transition-all relative active:scale-[0.98]",
+        "bg-paper shadow-soft hairline",
         active
-          ? `ring-2 ${a.ring} ring-offset-2 ring-offset-bone border-transparent ${a.bg}`
+          ? `ring-2 ${a.ring} ring-offset-2 ring-offset-bone border-transparent ${a.bg} shadow-pop`
           : disabled
             ? "opacity-40 cursor-not-allowed"
-            : "hover:border-moss hover:bg-bone-2",
+            : "hover:bg-bone-2 hover:shadow-pop",
       )}
     >
       <div className="flex items-start gap-3">

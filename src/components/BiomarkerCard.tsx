@@ -68,7 +68,7 @@ export function BiomarkerCard({ marker }: BiomarkerCardProps) {
   const catStyle = CATEGORY_STYLE[marker.category] ?? CATEGORY_STYLE["Sonstige"];
   const CatIcon = CATEGORY_ICON[marker.category];
   return (
-    <div className="hairline rounded-xl p-4 md:p-5 bg-bone relative overflow-hidden">
+    <div className="rounded-2xl p-4 md:p-5 bg-paper shadow-soft hairline relative overflow-hidden">
       <span
         aria-hidden
         className={`absolute top-0 left-0 h-full w-1 ${catStyle.dot}`}

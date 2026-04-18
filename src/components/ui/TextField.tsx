@@ -15,12 +15,12 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   const inputId = id ?? props.name;
   return (
     <label htmlFor={inputId} className="block">
-      {label && <div className="text-sm text-ink/80 mb-1.5">{label}</div>}
+      {label && <div className="text-sm text-ink/80 mb-2 font-medium">{label}</div>}
       <input
         ref={ref}
         id={inputId}
         className={cn(
-          "w-full h-11 px-3 text-base hairline rounded-lg focus:border-moss",
+          "w-full h-12 px-4 text-base bg-paper hairline shadow-soft rounded-xl focus:border-moss placeholder:text-mist/70",
           className,
         )}
         {...props}
@@ -42,13 +42,13 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
   const inputId = id ?? props.name;
   return (
     <label htmlFor={inputId} className="block">
-      {label && <div className="text-sm text-ink/80 mb-1.5">{label}</div>}
+      {label && <div className="text-sm text-ink/80 mb-2 font-medium">{label}</div>}
       <textarea
         ref={ref}
         id={inputId}
         rows={3}
         className={cn(
-          "w-full px-3 py-2.5 text-base hairline rounded-lg focus:border-moss resize-y",
+          "w-full px-4 py-3 text-base bg-paper hairline shadow-soft rounded-xl focus:border-moss resize-y placeholder:text-mist/70",
           className,
         )}
         {...props}

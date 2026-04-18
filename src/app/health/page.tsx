@@ -22,6 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
+import { StepActions } from "@/components/StepActions";
 import { CategoryGroup } from "@/components/CategoryGroup";
 import { Button } from "@/components/ui/Button";
 import { MultiSelectChips } from "@/components/ui/MultiSelectChips";
@@ -287,18 +288,18 @@ export default function HealthPage() {
 
         {error && <p className="text-sm text-coral">{error}</p>}
 
-        <div className="flex justify-between items-center pt-4">
-          <Link href="/profile">
+        <StepActions>
+          <Link href="/profile" className="hidden md:inline-flex">
             <Button type="button" variant="secondary">
               <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
               Zurück
             </Button>
           </Link>
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" block className="md:w-auto md:flex-none">
             Weiter zum Lifestyle
-            <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
           </Button>
-        </div>
+        </StepActions>
       </form>
     </StepFrame>
   );

@@ -55,10 +55,11 @@ export function SexCard({
       aria-checked={active}
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-3 p-6 rounded-xl transition-all hairline",
+        "flex flex-col items-center gap-3 p-5 md:p-6 rounded-2xl transition-all shadow-soft active:scale-[0.98]",
+        "bg-paper hairline",
         active
-          ? `ring-2 ${a.ring} ring-offset-2 ring-offset-bone border-transparent ${a.bg}`
-          : "bg-bone hover:bg-bone-2 hover:border-moss",
+          ? `ring-2 ${a.ring} ring-offset-2 ring-offset-bone border-transparent ${a.bg} shadow-pop`
+          : "hover:bg-bone-2 hover:shadow-pop",
       )}
     >
       <span

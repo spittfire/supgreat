@@ -9,7 +9,7 @@ export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-bone-2/60 hairline rounded-lg p-5 md:p-6",
+        "bg-paper hairline shadow-soft rounded-2xl p-5 md:p-6",
         className,
       )}
       {...props}

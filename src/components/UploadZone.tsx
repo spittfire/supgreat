@@ -1,7 +1,14 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { FileUp, FileText, Image as ImageIcon, X, Plus, Camera } from "lucide-react";
+import {
+  Camera,
+  FileText,
+  Image as ImageIcon,
+  ImagePlus,
+  Plus,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ACCEPTED = [
@@ -61,7 +68,6 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
           errors.push(`Gesamt-Upload > ${MAX_TOTAL_MB} MB.`);
           break;
         }
-        // Avoid obvious duplicates (same name+size)
         const dupe = current.some((c) => c.name === file.name && c.size === file.size);
         if (dupe) continue;
         valid.push(file);
@@ -81,78 +87,86 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
   };
 
   const empty = files.length === 0;
+  const totalBytes = files.reduce((s, f) => s + f.size, 0);
 
   return (
     <div className="w-full">
-      <label
-        htmlFor="supgreat-upload"
-        onDragEnter={(e) => {
-          e.preventDefault();
-          setDragOver(true);
+      {/* Hidden inputs, shared between empty-state and non-empty-state */}
+      <input
+        id="supgreat-upload"
+        ref={inputRef}
+        type="file"
+        accept={ACCEPTED.join(",")}
+        multiple
+        className="sr-only"
+        onChange={(e) => {
+          acceptMany(e.target.files);
+          if (e.target) e.target.value = "";
         }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
+      />
+      <input
+        ref={cameraRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="sr-only"
+        onChange={(e) => {
+          acceptMany(e.target.files);
+          if (e.target) e.target.value = "";
         }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragOver(false);
-          acceptMany(e.dataTransfer.files);
-        }}
-        className={cn(
-          "group block cursor-pointer select-none rounded-lg border border-dashed transition-colors",
-          dragOver
-            ? "border-moss bg-bone-2"
-            : "border-line hover:border-moss hover:bg-bone-2",
-          !empty && "bg-bone-2 border-moss",
-          empty ? "p-8 md:p-12" : "p-5",
-        )}
-      >
-        <input
-          id="supgreat-upload"
-          ref={inputRef}
-          type="file"
-          accept={ACCEPTED.join(",")}
-          multiple
-          className="sr-only"
-          onChange={(e) => {
-            acceptMany(e.target.files);
-            if (e.target) e.target.value = "";
-          }}
-        />
-        <input
-          ref={cameraRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="sr-only"
-          onChange={(e) => {
-            acceptMany(e.target.files);
-            if (e.target) e.target.value = "";
-          }}
-        />
+      />
 
-        {empty ? (
-          <div className="flex flex-col items-center gap-4 text-center">
+      {empty ? (
+        <label
+          htmlFor="supgreat-upload"
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            acceptMany(e.dataTransfer.files);
+          }}
+          className={cn(
+            "group block cursor-pointer select-none rounded-2xl p-8 md:p-10 transition-all shadow-soft",
+            dragOver
+              ? "ring-4 ring-brand-amber/40 bg-brand-amber/20"
+              : "bg-brand-amber/12 hover:bg-brand-amber/20 hover:shadow-pop",
+          )}
+          style={{
+            backgroundImage:
+              "radial-gradient(110% 120% at 0% 0%, rgba(196,150,74,0.25) 0%, rgba(196,150,74,0.06) 55%, rgba(255,255,255,0) 100%)",
+          }}
+        >
+          <div className="flex flex-col items-center text-center gap-5">
             <span
               aria-hidden
-              className="w-12 h-12 rounded-full hairline flex items-center justify-center text-moss"
+              className="w-20 h-20 rounded-3xl bg-brand-amber text-bone flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform"
             >
-              <FileUp strokeWidth={1.3} />
+              <ImagePlus className="w-9 h-9" strokeWidth={1.4} />
             </span>
             <div>
-              <p className="text-ink text-lg font-medium">Bluttest hochladen</p>
-              <p className="text-sm text-mist mt-1">
-                PDF oder Foto · mehrere Dateien möglich · Drag &amp; Drop oder antippen
+              <p className="text-ink text-xl md:text-2xl font-semibold tracking-tight">
+                Bluttest hochladen
+              </p>
+              <p className="text-sm text-ink/60 mt-1.5">
+                PDF oder Fotos · mehrere möglich · tippe oder ziehe hierher
               </p>
             </div>
-            <div className="flex gap-3 mt-2 flex-wrap justify-center">
-              <span className="inline-flex items-center gap-1.5 text-xs text-mist hairline rounded-full px-3 py-1">
-                <FileText className="w-3.5 h-3.5" strokeWidth={1.5} /> PDF
+            <div className="flex gap-2 flex-wrap justify-center">
+              <span className="inline-flex items-center gap-1.5 text-xs text-ink/70 bg-bone px-3 py-1.5 rounded-full shadow-soft">
+                <FileText className="w-3.5 h-3.5" strokeWidth={1.5} />
+                PDF
               </span>
-              <span className="inline-flex items-center gap-1.5 text-xs text-mist hairline rounded-full px-3 py-1">
-                <ImageIcon className="w-3.5 h-3.5" strokeWidth={1.5} /> JPG / PNG
+              <span className="inline-flex items-center gap-1.5 text-xs text-ink/70 bg-bone px-3 py-1.5 rounded-full shadow-soft">
+                <ImageIcon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                JPG · PNG · HEIC
               </span>
               <button
                 type="button"
@@ -160,86 +174,77 @@ export function UploadZone({ files, onChange }: UploadZoneProps) {
                   e.preventDefault();
                   cameraRef.current?.click();
                 }}
-                className="md:hidden inline-flex items-center gap-1.5 text-xs text-moss hairline rounded-full px-3 py-1"
+                className="md:hidden inline-flex items-center gap-1.5 text-xs text-bone bg-ink px-3 py-1.5 rounded-full shadow-soft active:scale-95 transition-transform"
               >
-                <Camera className="w-3.5 h-3.5" strokeWidth={1.5} /> Kamera
+                <Camera className="w-3.5 h-3.5" strokeWidth={1.5} />
+                Kamera öffnen
               </button>
             </div>
           </div>
-        ) : (
-          <div onClick={(e) => e.preventDefault()}>
-            <div className="flex items-baseline justify-between mb-3">
-              <div className="text-sm text-ink font-medium">
-                {files.length} Datei{files.length === 1 ? "" : "en"} bereit
-              </div>
-              <div className="text-xs text-mist font-mono">
-                {humanSize(files.reduce((s, f) => s + f.size, 0))} gesamt · max. {MAX_FILES}
-              </div>
+        </label>
+      ) : (
+        <div className="rounded-2xl bg-paper shadow-soft hairline p-4 md:p-5">
+          <div className="flex items-baseline justify-between mb-3">
+            <div className="text-sm font-medium text-ink">
+              {files.length} Datei{files.length === 1 ? "" : "en"} bereit
             </div>
-            <ul className="space-y-2">
-              {files.map((file, idx) => (
-                <li
-                  key={`${file.name}-${file.size}-${idx}`}
-                  className="flex items-center gap-3 hairline rounded-md bg-bone px-3 py-2"
-                >
-                  <span className="shrink-0 w-8 h-8 rounded-md hairline flex items-center justify-center text-moss">
-                    {file.type === "application/pdf" ? (
-                      <FileText className="w-4 h-4" strokeWidth={1.5} />
-                    ) : (
-                      <ImageIcon className="w-4 h-4" strokeWidth={1.5} />
-                    )}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm text-ink">{file.name}</div>
-                    <div className="text-xs text-mist font-mono">
-                      {humanSize(file.size)} · {file.type || "Datei"}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      removeAt(idx);
-                    }}
-                    className="shrink-0 text-mist hover:text-coral p-1"
-                    aria-label={`„${file.name}" entfernen`}
-                  >
-                    <X className="w-4 h-4" strokeWidth={1.5} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            {files.length < MAX_FILES && (
-              <div className="mt-3 flex gap-2">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    inputRef.current?.click();
-                  }}
-                  className="inline-flex items-center gap-1.5 text-sm text-moss hairline rounded-md px-3 py-2 hover:bg-bone"
-                >
-                  <Plus className="w-4 h-4" strokeWidth={1.5} />
-                  Weitere Datei hinzufügen
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    cameraRef.current?.click();
-                  }}
-                  className="md:hidden inline-flex items-center gap-1.5 text-sm text-moss hairline rounded-md px-3 py-2 hover:bg-bone"
-                >
-                  <Camera className="w-4 h-4" strokeWidth={1.5} />
-                  Kamera
-                </button>
-              </div>
-            )}
+            <div className="text-xs text-mist font-mono">
+              {humanSize(totalBytes)} · max. {MAX_FILES}
+            </div>
           </div>
-        )}
-      </label>
+          <ul className="space-y-2">
+            {files.map((file, idx) => (
+              <li
+                key={`${file.name}-${file.size}-${idx}`}
+                className="flex items-center gap-3 bg-bone rounded-xl hairline px-3 py-2.5"
+              >
+                <span className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center bg-brand-amber/15 text-brand-amber">
+                  {file.type === "application/pdf" ? (
+                    <FileText className="w-4 h-4" strokeWidth={1.5} />
+                  ) : (
+                    <ImageIcon className="w-4 h-4" strokeWidth={1.5} />
+                  )}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm text-ink font-medium">{file.name}</div>
+                  <div className="text-xs text-mist font-mono">
+                    {humanSize(file.size)}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeAt(idx)}
+                  className="shrink-0 text-mist hover:text-coral w-9 h-9 rounded-lg flex items-center justify-center active:scale-95 transition-transform"
+                  aria-label={`„${file.name}" entfernen`}
+                >
+                  <X className="w-4 h-4" strokeWidth={1.5} />
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {files.length < MAX_FILES && (
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-ink bg-bone hairline rounded-xl px-4 py-3 hover:bg-bone-2 transition-colors active:scale-[0.98]"
+              >
+                <Plus className="w-4 h-4" strokeWidth={1.5} />
+                Weitere Datei
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraRef.current?.click()}
+                className="md:hidden flex-1 inline-flex items-center justify-center gap-1.5 text-sm text-bone bg-ink rounded-xl px-4 py-3 active:scale-[0.98] shadow-soft"
+              >
+                <Camera className="w-4 h-4" strokeWidth={1.5} />
+                Kamera
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {error && <p className="mt-3 text-sm text-coral">{error}</p>}
     </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Cake, Ruler, Scale } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
+import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
 import { GoalTile } from "@/components/ui/GoalTile";
 import { SexCard } from "@/components/ui/SexCard";
@@ -186,18 +187,18 @@ export default function ProfilePage() {
           </p>
         )}
 
-        <div className="flex justify-between items-center pt-4">
-          <Link href="/">
+        <StepActions>
+          <Link href="/" className="hidden md:inline-flex">
             <Button type="button" variant="secondary">
               <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
               Zurück
             </Button>
           </Link>
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" block className="md:w-auto md:flex-none">
             Weiter zur Anamnese
-            <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
           </Button>
-        </div>
+        </StepActions>
       </form>
     </StepFrame>
   );

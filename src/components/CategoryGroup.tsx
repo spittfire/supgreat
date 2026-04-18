@@ -37,12 +37,12 @@ export function CategoryGroup({
   const [open, setOpen] = useState(defaultOpen || selectedCount > 0);
   const a = ACCENT[accent];
   return (
-    <div className="hairline rounded-xl bg-bone overflow-hidden">
+    <div className="rounded-2xl bg-paper shadow-soft hairline overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-bone-2 transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-bone-2 transition-colors"
       >
         <span
           aria-hidden

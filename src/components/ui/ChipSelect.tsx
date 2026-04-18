@@ -38,10 +38,10 @@ export function ChipSelect<T extends string>({
             aria-checked={active}
             onClick={() => onChange(opt)}
             className={cn(
-              "text-left px-4 py-3 rounded-lg transition-colors text-sm",
+              "text-left px-4 py-3.5 rounded-xl transition-all text-sm active:scale-[0.98]",
               active
-                ? "bg-ink text-bone border border-ink"
-                : "hairline hover:bg-bone-2 text-ink",
+                ? "bg-ink text-bone border border-ink shadow-soft"
+                : "bg-paper hairline shadow-soft hover:bg-bone-2 text-ink",
             )}
           >
             {opt}

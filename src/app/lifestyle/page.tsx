@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
+import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
 import { ChipSelect } from "@/components/ui/ChipSelect";
 import { MultiSelectChips } from "@/components/ui/MultiSelectChips";
@@ -367,25 +368,36 @@ export default function LifestylePage() {
 
         {error && <p className="mt-6 text-sm text-coral">{error}</p>}
 
-        <div className="flex justify-between items-center pt-10">
+        <StepActions>
           {block === 0 ? (
-            <Link href="/health">
+            <Link href="/health" className="hidden md:inline-flex">
               <Button type="button" variant="secondary">
                 <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
                 Zurück
               </Button>
             </Link>
           ) : (
-            <Button type="button" variant="secondary" onClick={prevBlock}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={prevBlock}
+              className="hidden md:inline-flex"
+            >
               <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
               Zurück
             </Button>
           )}
-          <Button type="button" size="lg" onClick={nextBlock}>
+          <Button
+            type="button"
+            size="lg"
+            onClick={nextBlock}
+            block
+            className="md:w-auto md:flex-none"
+          >
             {block < BLOCK_META.length - 1 ? "Weiter" : "Ergebnisse anzeigen"}
-            <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+            <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
           </Button>
-        </div>
+        </StepActions>
       </div>
     </StepFrame>
   );

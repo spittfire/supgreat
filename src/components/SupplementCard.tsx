@@ -29,7 +29,7 @@ function TimingBadge({ timing }: { timing: string }) {
 export function SupplementCard({ rec, index }: SupplementCardProps) {
   return (
     <article
-      className="hairline rounded-xl p-5 md:p-6 bg-bone relative overflow-hidden"
+      className="rounded-2xl p-5 md:p-6 bg-paper shadow-soft hairline relative overflow-hidden"
     >
       <span
         aria-hidden

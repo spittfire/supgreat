@@ -62,7 +62,7 @@ export function MultiSelectChips({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Suchen …"
-            className="w-full h-10 pl-9 pr-3 text-sm hairline rounded-lg"
+            className="w-full h-11 pl-9 pr-3 text-sm bg-paper hairline shadow-soft rounded-xl"
           />
         </div>
       )}
@@ -78,12 +78,12 @@ export function MultiSelectChips({
               disabled={disabled}
               aria-pressed={active}
               className={cn(
-                "text-left px-4 py-3 rounded-lg text-sm transition-colors flex items-center justify-between gap-2",
+                "text-left px-4 py-3.5 rounded-xl text-sm transition-all flex items-center justify-between gap-2 active:scale-[0.98]",
                 active
-                  ? "bg-ink text-bone border border-ink"
+                  ? "bg-ink text-bone border border-ink shadow-soft"
                   : disabled
-                    ? "hairline text-mist cursor-not-allowed opacity-60"
-                    : "hairline text-ink hover:bg-bone-2",
+                    ? "bg-paper hairline text-mist cursor-not-allowed opacity-60"
+                    : "bg-paper hairline shadow-soft text-ink hover:bg-bone-2",
               )}
             >
               <span>{opt}</span>

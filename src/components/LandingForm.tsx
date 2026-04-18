@@ -26,13 +26,13 @@ export function LandingForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="w-full space-y-8">
+    <form onSubmit={onSubmit} className="w-full space-y-5">
       <UploadZone files={files} onChange={setFiles} />
 
       <label
         className={cn(
           "flex items-start gap-3 cursor-pointer select-none",
-          "text-sm leading-relaxed text-ink/80",
+          "text-sm leading-relaxed text-ink/80 rounded-xl hairline bg-bone px-4 py-3",
         )}
       >
         <input
@@ -42,8 +42,7 @@ export function LandingForm() {
           className="mt-0.5 w-4 h-4 accent-moss"
         />
         <span>
-          Ich stimme der Verarbeitung meines Bluttests zur Analyse zu. Die Daten werden
-          nicht an Dritte weitergegeben und können jederzeit gelöscht werden.{" "}
+          Ich stimme der Verarbeitung meines Bluttests zur Analyse zu.{" "}
           <a href="/datenschutz" className="underline hover:text-moss">
             Datenschutz
           </a>
@@ -51,12 +50,10 @@ export function LandingForm() {
         </span>
       </label>
 
-      <div className="flex justify-end">
-        <Button type="submit" size="lg" disabled={!canSubmit}>
-          Analyse starten
-          <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
-        </Button>
-      </div>
+      <Button type="submit" size="lg" disabled={!canSubmit} block>
+        Analyse starten
+        <ArrowRight className="w-5 h-5" strokeWidth={1.6} />
+      </Button>
     </form>
   );
 }
