@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0B0B0C;
+  --color-bone: #FAFAF7;
+  --color-bone-2: #F2F0EA;
+  --color-moss: #2F3E32;
+  --color-sage: #8FA68E;
+  --color-brand-amber: #C4964A;
+  --color-coral: #D4736B;
+  --color-mist: #7E8886;
+  --color-line: #E4E1D9;
+
+  --font-display: var(--font-inter);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+}
+
+:root {
+  color-scheme: light only;
+}
+
+html {
+  background: var(--color-bone);
+}
+
+html,
+body {
+  background: var(--color-bone);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  font-feature-settings: "tnum", "zero";
+}
+
+.hairline {
+  border: 1px solid var(--color-line);
+}
+.hairline-b {
+  border-bottom: 1px solid var(--color-line);
+}
+
+:where(button, a, input, textarea, select):focus-visible {
+  outline: 2px solid var(--color-moss);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+input,
+textarea,
+select {
+  background: transparent;
+}
