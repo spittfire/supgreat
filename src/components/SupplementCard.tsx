@@ -34,6 +34,17 @@ function TimingBadge({ timing }: { timing: string }) {
   );
 }
 
+function typeBadgeLabel(type: SupplementRec["product_type"]): string {
+  switch (type) {
+    case "module":
+      return "Monatsration";
+    case "core_box":
+      return "Core Box";
+    case "standalone":
+      return "Einzeldose";
+  }
+}
+
 export function SupplementCard({ rec, index }: SupplementCardProps) {
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-steel bg-onyx p-6 md:p-8 transition-all duration-500 hover:border-iron hover:bg-graphite">
@@ -45,7 +56,7 @@ export function SupplementCard({ rec, index }: SupplementCardProps) {
       />
       <div className="flex items-start gap-5">
         <div
-          className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-carbon shadow-glow-soft"
+          className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-ink shadow-glow-soft"
           style={{
             background: rec.category_color,
             boxShadow: `0 0 30px ${rec.category_color}60, inset 0 -2px 0 rgba(0,0,0,0.18)`,
@@ -66,6 +77,12 @@ export function SupplementCard({ rec, index }: SupplementCardProps) {
           <div className="mt-2 flex flex-wrap gap-2 items-center">
             <span className="font-mono text-sm text-pearl">{rec.dosage}</span>
             <TimingBadge timing={rec.timing} />
+            <span className="inline-flex items-center rounded-full border border-steel bg-graphite px-2.5 py-0.5 text-[11px] font-mono text-silver">
+              {typeBadgeLabel(rec.product_type)}
+            </span>
+            <span className="font-mono text-[11px] text-ash tabular-nums">
+              {rec.sku}
+            </span>
           </div>
 
           <p className="mt-4 text-[15px] leading-relaxed text-pearl">
