@@ -47,7 +47,7 @@ export function SegmentedControl<T extends string>({
               "relative flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm transition-all duration-300",
               block && "flex-1",
               active
-                ? "bg-lime text-carbon font-medium shadow-glow-lime"
+                ? "bg-lime text-ink font-medium shadow-glow-lime"
                 : "text-silver hover:text-pearl",
             )}
           >

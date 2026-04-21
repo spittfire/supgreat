@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,8 +22,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0B0D",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FAF7F1" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A0B0D" },
+  ],
 };
 
 export default function RootLayout({
@@ -34,25 +37,28 @@ export default function RootLayout({
     <html
       lang="de"
       className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="relative min-h-full flex flex-col bg-carbon text-pearl">
-        {/* Subtle radial highlight top */}
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 bg-radial-subtle"
-        />
-        {/* Amber pool bottom-right */}
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 bg-radial-amber"
-        />
-        {/* Grain texture overlay */}
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 bg-grain opacity-[0.035] mix-blend-overlay"
-        />
+        <ThemeProvider>
+          {/* Subtle radial highlight top */}
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 bg-radial-subtle"
+          />
+          {/* Amber pool bottom-right */}
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 bg-radial-amber"
+          />
+          {/* Grain texture overlay */}
+          <div
+            aria-hidden
+            className="pointer-events-none fixed inset-0 bg-grain opacity-[0.035] mix-blend-overlay"
+          />
 
-        <div className="relative z-0 flex flex-col min-h-full">{children}</div>
+          <div className="relative z-0 flex flex-col min-h-full">{children}</div>
+        </ThemeProvider>
       </body>
     </html>
   );

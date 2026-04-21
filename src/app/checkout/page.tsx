@@ -2,22 +2,22 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Lock, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ExternalLink, Lock } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { TextField } from "@/components/ui/TextField";
-import { PRODUCT_BY_ID } from "@/lib/products";
 import { useFlowStore } from "@/store/flow-store";
 
-const PLANS = {
-  once: { label: "Einmalkauf", discount: 0, subscription: false },
-  subscription: { label: "Abo · monatlich", discount: 0.15, subscription: true },
-  coaching: { label: "Coaching + Box", discount: 0, subscription: false, addOn: 79 },
-} as const;
+type PlanKey = "once" | "subscription" | "coaching";
 
-type PlanKey = keyof typeof PLANS;
+const PLAN_COACHING_ADD_ON = 79;
+
+function planLabel(p: PlanKey): string {
+  if (p === "once") return "Einmalkauf";
+  if (p === "subscription") return "Abo · monatlich";
+  return "Coaching + Box";
+}
 
 export default function CheckoutPage() {
   const recommendation = useFlowStore((s) => s.recommendation);
@@ -30,49 +30,80 @@ export default function CheckoutPage() {
     if (sp === "once" || sp === "subscription" || sp === "coaching") return sp;
     return "subscription";
   });
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState(profile?.first_name ?? "");
-  const [zip, setZip] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setStep(8);
   }, [setStep]);
 
   const summary = useMemo(() => {
-    const items = recommendation?.supplements ?? [];
-    const base = items.reduce(
-      (s, r) =>
-        s +
-        (PLANS[plan].subscription
-          ? (PRODUCT_BY_ID.get(r.id)?.price_subscription ?? 0)
-          : (PRODUCT_BY_ID.get(r.id)?.price_single ?? 0)),
+    const subscription = plan === "subscription";
+    const core = recommendation?.core_box;
+    const modules = recommendation?.modules ?? [];
+    const corePrice = core
+      ? subscription
+        ? core.price_subscription
+        : core.price_single
+      : 0;
+    const modulesPrice = modules.reduce(
+      (s, r) => s + (subscription ? r.price_subscription : r.price_single),
       0,
     );
-    const addOn = "addOn" in PLANS[plan] ? (PLANS[plan] as { addOn: number }).addOn : 0;
-    return { base, addOn, total: base + addOn };
+    const addOn = plan === "coaching" ? PLAN_COACHING_ADD_ON : 0;
+    return {
+      subscription,
+      core,
+      modules,
+      corePrice,
+      modulesPrice,
+      addOn,
+      total: corePrice + modulesPrice + addOn,
+    };
   }, [recommendation, plan]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
+  const handleShopifyCheckout = async () => {
+    if (!recommendation) return;
+    setError(null);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          core_sku: recommendation.core_box.sku,
+          module_skus: recommendation.modules.map((m) => m.sku),
+          plan: plan === "coaching" ? "subscription" : plan,
+        }),
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        checkout_url?: string;
+        error?: string;
+      };
+      if (!res.ok || !body.checkout_url) {
+        throw new Error(body.error ?? `HTTP ${res.status}`);
+      }
+      window.location.href = body.checkout_url;
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Shopify-Checkout konnte nicht erstellt werden.",
+      );
+      setSubmitting(false);
+    }
   };
 
-  if (submitted) {
+  if (!recommendation) {
     return (
       <StepFrame
         step={8}
-        label="Schritt 08 · Bestätigung"
-        title={
-          <>
-            <span className="italic text-silver">Danke,</span>{" "}
-            <span className="text-lime">{name || "dir"}.</span>
-          </>
-        }
-        sub="Wir melden uns per E-Mail mit Zahlungs-Link und Versandbestätigung, sobald der Checkout freigeschaltet ist."
+        label="Schritt 08 · Checkout"
+        title={<>Deine Box fehlt noch.</>}
+        sub="Bitte zuerst die Empfehlung erzeugen."
       >
-        <Link href="/">
-          <Button>Zurück zum Anfang</Button>
+        <Link href="/box">
+          <Button>Zur Box</Button>
         </Link>
       </StepFrame>
     );
@@ -88,15 +119,14 @@ export default function CheckoutPage() {
           <span className="italic text-lime">{profile?.first_name || "du"}</span>.
         </>
       }
-      sub="Wähle dein Modell — die eigentliche Zahlung kommt in der nächsten Iteration über Shopify."
+      sub="Wähle dein Modell — die Zahlung erfolgt sicher über Shopify."
     >
-      <form onSubmit={onSubmit} className="grid md:grid-cols-5 gap-6 md:gap-8">
+      <div className="grid md:grid-cols-5 gap-6 md:gap-8">
         <section className="md:col-span-3 space-y-6">
           <div>
             <Eyebrow>Modell wählen</Eyebrow>
             <div role="radiogroup" aria-label="Plan" className="mt-4 grid gap-3">
-              {(Object.keys(PLANS) as PlanKey[]).map((key) => {
-                const info = PLANS[key];
+              {(["subscription", "once", "coaching"] as PlanKey[]).map((key) => {
                 const active = plan === key;
                 return (
                   <button
@@ -112,11 +142,9 @@ export default function CheckoutPage() {
                     }`}
                   >
                     <div className="flex items-baseline justify-between">
-                      <div className="font-medium text-pearl">{info.label}</div>
-                      {"discount" in info && info.discount > 0 && (
-                        <span className="text-xs font-mono text-lime">
-                          −{Math.round(info.discount * 100)} %
-                        </span>
+                      <div className="font-medium text-pearl">{planLabel(key)}</div>
+                      {key === "subscription" && (
+                        <span className="text-xs font-mono text-lime">−15 %</span>
                       )}
                     </div>
                     <div className="text-sm text-silver mt-1">
@@ -132,46 +160,39 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <TextField
-              label="Vorname"
-              name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <TextField
-              label="PLZ"
-              name="zip"
-              value={zip}
-              onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
-              inputMode="numeric"
-              required
-            />
-          </div>
-          <TextField
-            label="E-Mail"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            required
-          />
+          {error && (
+            <div className="rounded-xl border border-coral/40 bg-coral/5 p-4 text-sm text-coral">
+              {error}
+            </div>
+          )}
         </section>
 
         <aside className="md:col-span-2">
           <div className="rounded-3xl border border-steel bg-onyx p-6 md:p-7 sticky top-24">
             <Eyebrow>Zusammenfassung</Eyebrow>
             <ul className="mt-5 space-y-2 text-sm">
-              {recommendation?.supplements.map((r) => (
+              <li className="flex justify-between gap-3">
+                <span className="text-pearl">
+                  {summary.core?.name ?? "Core Box"}
+                  <span className="ml-2 text-[10px] font-mono text-ash">
+                    {summary.core?.sku}
+                  </span>
+                </span>
+                <span className="font-mono text-silver tabular-nums">
+                  €{summary.corePrice.toFixed(0)}
+                </span>
+              </li>
+              {summary.modules.map((r) => (
                 <li key={r.id} className="flex justify-between gap-3">
-                  <span className="text-pearl">{r.name}</span>
-                  <span className="font-mono text-silver tabular-nums">
+                  <span className="text-pearl truncate">
+                    {r.name}
+                    <span className="ml-2 text-[10px] font-mono text-ash">{r.sku}</span>
+                  </span>
+                  <span className="font-mono text-silver tabular-nums shrink-0">
                     €
-                    {(PLANS[plan].subscription
-                      ? (PRODUCT_BY_ID.get(r.id)?.price_subscription ?? 0)
-                      : (PRODUCT_BY_ID.get(r.id)?.price_single ?? 0)
-                    ).toFixed(0)}
+                    {(summary.subscription ? r.price_subscription : r.price_single).toFixed(
+                      0,
+                    )}
                   </span>
                 </li>
               ))}
@@ -187,22 +208,37 @@ export default function CheckoutPage() {
             <div className="border-t border-steel my-5" />
             <div className="flex justify-between items-baseline">
               <div className="text-[11px] uppercase tracking-[0.2em] text-silver">
-                Gesamt
+                Gesamt {summary.subscription ? "/ Monat" : ""}
               </div>
               <div className="font-mono text-3xl text-pearl tabular-nums">
                 €{summary.total.toFixed(0)}
               </div>
             </div>
-            <Button type="submit" size="lg" className="w-full mt-5">
-              <Lock className="w-4 h-4" strokeWidth={1.5} />
-              Bestellung reservieren
+            <Button
+              type="button"
+              size="lg"
+              className="w-full mt-5"
+              disabled={submitting}
+              onClick={handleShopifyCheckout}
+            >
+              {submitting ? (
+                <>
+                  <Lock className="w-4 h-4" strokeWidth={1.5} />
+                  Weiterleiten …
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
+                  Zum Shopify Checkout
+                </>
+              )}
             </Button>
             <p className="text-xs text-ash mt-3 text-center">
-              Noch keine Zahlung. Bestätigung per E-Mail.
+              Zahlung & Versand laufen über Shopify.
             </p>
           </div>
         </aside>
-      </form>
+      </div>
 
       <StepActions>
         <Link href="/box" className="hidden md:inline-flex">
@@ -211,19 +247,6 @@ export default function CheckoutPage() {
             Zurück zur Box
           </Button>
         </Link>
-        <div className="hidden md:block md:ml-auto">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={(e) => {
-              const form = (e.currentTarget as HTMLButtonElement).closest("form");
-              form?.requestSubmit();
-            }}
-          >
-            <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
-            Reservieren
-          </Button>
-        </div>
       </StepActions>
     </StepFrame>
   );

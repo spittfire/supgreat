@@ -1,24 +1,19 @@
 import { interactionNote } from "./contraindications";
-import { explainTriggers, recommendProducts, type RecommendContext } from "./supplement-rules";
+import { explainTriggers, recommendBox, type RecommendContext } from "./supplement-rules";
 import type { Recommendation, SupplementRec } from "./types";
 
 /**
  * Offline fallback for /api/recommend: runs the real rule engine locally and
- * synthesizes a readable reason_short / reason_detail from the matched triggers
- * and the product's built-in short_benefit. No Claude API call.
+ * synthesizes reasons from matched triggers + product short_benefit. The Core
+ * Box is always included; modules address specific profile gaps.
  */
 export function mockRecommend(ctx: RecommendContext): Recommendation {
-  const ranked = recommendProducts(ctx, 8);
+  const { core_box, modules } = recommendBox(ctx, 12);
 
-  if (ranked.length === 0) {
-    return {
-      supplements: [],
-      overall_assessment:
-        "Deine Werte und Lebensstil-Signale wirken insgesamt sehr ausgewogen — aktuell sehen wir keinen akuten Supplement-Bedarf. Halte deine Routinen und kontrolliere in 6–12 Monaten erneut.",
-    };
-  }
+  const coreReason =
+    "Die Core Box ist dein tägliches Fundament: 22 Wirkstoffe in 4 Tagespacks (Morning · Midday · Afternoon · Night), abgestimmt auf Energie, Fokus, Stoffwechsel und Regeneration.";
 
-  const supplements: SupplementRec[] = ranked.map((r) => {
+  const supplements: SupplementRec[] = modules.map((r) => {
     const reasons = explainTriggers(r.matched_triggers, ctx.biomarkers);
     const sources = r.matched_triggers
       .map((t) => {
@@ -52,8 +47,8 @@ export function mockRecommend(ctx: RecommendContext): Recommendation {
     const reason_short = `${r.product.short_benefit}.`;
     const top = reasons.slice(0, 2).join(" · ");
     const reason_detail = top
-      ? `Zusammenhang mit: ${top}. Das Produkt kann zur Regulation der betroffenen Bereiche beitragen und passt zu deinem aktuellen Profil.`
-      : `Passt zu deinem aktuellen Profil und kann zur Regulation beitragen.`;
+      ? `Zusammenhang mit: ${top}. Das Modul ergänzt deine Core Box gezielt in diesem Bereich.`
+      : `Ergänzt deine Core Box gezielt und passt zu deinem aktuellen Profil.`;
 
     const warning =
       r.product.interactions
@@ -63,6 +58,8 @@ export function mockRecommend(ctx: RecommendContext): Recommendation {
 
     return {
       id: r.product.id,
+      sku: r.product.sku,
+      product_type: r.product.product_type,
       name: r.product.name,
       dosage: r.product.dosage,
       timing: r.product.timing,
@@ -72,6 +69,8 @@ export function mockRecommend(ctx: RecommendContext): Recommendation {
       reason_detail,
       data_sources_used: sources,
       warning,
+      price_single: r.product.price_single,
+      price_subscription: r.product.price_subscription,
     };
   });
 
@@ -80,10 +79,23 @@ export function mockRecommend(ctx: RecommendContext): Recommendation {
     (b) => b.status === "low" || b.status === "suboptimal",
   ).length;
   const overall_assessment = hasCritical
-    ? `Bei einigen Werten sehen wir deutliche Auffälligkeiten — diese mit dem Arzt besprechen. Die empfohlenen Supplements adressieren die unterstützenden Bereiche; sie ersetzen keine ärztliche Abklärung.`
+    ? `Bei einigen Werten sehen wir deutliche Auffälligkeiten — diese mit dem Arzt besprechen. Die Core Box deckt das tägliche Fundament ab, die Module adressieren gezielt die betroffenen Bereiche.`
     : lowCount > 3
-      ? `Mehrere Werte liegen unterhalb des optimalen Bereichs. Die Box konzentriert sich auf die Bausteine mit dem größten Hebel — parallel dazu lohnen sich gezielte Lifestyle-Anpassungen (Schlaf, Sonne, Ernährung).`
-      : `Dein Profil ist solide. Die Box feintuned die Bereiche mit Spielraum und unterstützt deine persönlichen Ziele — ideal als Erhalt-Protokoll.`;
+      ? `Mehrere Werte liegen unterhalb des optimalen Bereichs. Deine Core Box bildet das Fundament; die ergänzenden Module setzen dort an, wo der größte Hebel liegt.`
+      : `Dein Profil ist solide. Die Core Box feintuned den Alltag, die Module unterstützen gezielt deine persönlichen Ziele — ideal als Erhalt-Protokoll.`;
 
-  return { supplements, overall_assessment };
+  const monthly_total =
+    core_box.price_subscription +
+    supplements.reduce((s, r) => s + r.price_subscription, 0);
+  const onetime_total =
+    core_box.price_single +
+    supplements.reduce((s, r) => s + r.price_single, 0);
+
+  return {
+    core_box: { ...core_box, reason_short: coreReason },
+    modules: supplements,
+    overall_assessment,
+    monthly_total: Math.round(monthly_total * 10) / 10,
+    onetime_total: Math.round(onetime_total * 10) / 10,
+  };
 }

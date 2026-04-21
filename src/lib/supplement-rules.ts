@@ -1,5 +1,5 @@
-import type { Biomarker, Health, Lifestyle, Profile } from "./types";
-import { PRODUCTS, type Product, type Trigger, type LifestyleScoreField } from "./products";
+import type { Biomarker, CoreBoxRec, Health, Lifestyle, Profile } from "./types";
+import { CORE_BOX, PRODUCTS, type Product, type Trigger, type LifestyleScoreField } from "./products";
 import { hasContraindication } from "./contraindications";
 
 export type RecommendContext = {
@@ -92,6 +92,34 @@ export function recommendProducts(ctx: RecommendContext, limit = 8): RankedProdu
   }
   ranked.sort((a, b) => b.score - a.score);
   return ranked.slice(0, limit);
+}
+
+/**
+ * Produce a Core Box recommendation (always included) plus a ranked list of
+ * add-on Module recommendations. Core Box carries the constitutional
+ * foundation; modules address the specific gaps in the user's profile.
+ */
+export function recommendBox(
+  ctx: RecommendContext,
+  moduleLimit = 12,
+): { core_box: CoreBoxRec; modules: RankedProduct[] } {
+  const modules = recommendProducts(ctx, moduleLimit);
+  const core_box: CoreBoxRec = {
+    sku: CORE_BOX.sku,
+    name: CORE_BOX.name,
+    tagline: CORE_BOX.tagline,
+    price_single: CORE_BOX.price_single,
+    price_subscription: CORE_BOX.price_subscription,
+    reason_short: CORE_BOX.tagline,
+    ingredient_count: CORE_BOX.ingredient_count,
+    episodes: CORE_BOX.episodes.map((e) => ({
+      id: e.id,
+      label: e.label,
+      goal: e.goal,
+      ingredients: e.ingredients.map((i) => ({ ...i })),
+    })),
+  };
+  return { core_box, modules };
 }
 
 /** Build a compact, human-readable summary of what drove the selection — used in Claude prompt. */

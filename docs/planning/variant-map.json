@@ -1,0 +1,515 @@
+{
+  "COREBOX-30D-ONCE": {
+    "variant_id": "61671000899914",
+    "gid": "gid://shopify/ProductVariant/61671000899914",
+    "product_title": "Daily Human Optimization System – Core Box",
+    "variant_title": "Einmalkauf",
+    "price": "89.0",
+    "currency": "EUR",
+    "handle": "daily-human-optimization-system"
+  },
+  "COREBOX-30D-ABO": {
+    "variant_id": "61671000932682",
+    "gid": "gid://shopify/ProductVariant/61671000932682",
+    "product_title": "Daily Human Optimization System – Core Box",
+    "variant_title": "Abo monatlich",
+    "price": "79.0",
+    "currency": "EUR",
+    "handle": "daily-human-optimization-system"
+  },
+  "MOD-MAG-30D": {
+    "variant_id": "61671000965450",
+    "gid": "gid://shopify/ProductVariant/61671000965450",
+    "product_title": "Magnesium Bisglycinat – Monatsration (200 mg elementar/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-mag-30d"
+  },
+  "MOD-B6-30D": {
+    "variant_id": "61671001030986",
+    "gid": "gid://shopify/ProductVariant/61671001030986",
+    "product_title": "Vitamin B6 (P5P) – Monatsration (25 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.9",
+    "currency": "EUR",
+    "handle": "mod-b6-30d"
+  },
+  "MOD-GLY-30D": {
+    "variant_id": "61671001063754",
+    "gid": "gid://shopify/ProductVariant/61671001063754",
+    "product_title": "Glycin – Monatsration (3 g/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-gly-30d"
+  },
+  "MOD-CHR-30D": {
+    "variant_id": "61671001129290",
+    "gid": "gid://shopify/ProductVariant/61671001129290",
+    "product_title": "Chromium Picolinat – Monatsration (200 µg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.5",
+    "currency": "EUR",
+    "handle": "mod-chr-30d"
+  },
+  "MOD-BER-30D": {
+    "variant_id": "61671001162058",
+    "gid": "gid://shopify/ProductVariant/61671001162058",
+    "product_title": "Berberin HCL – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "8.9",
+    "currency": "EUR",
+    "handle": "mod-ber-30d"
+  },
+  "MOD-INO-30D": {
+    "variant_id": "61671001194826",
+    "gid": "gid://shopify/ProductVariant/61671001194826",
+    "product_title": "Myo-Inositol – Monatsration (2 g/Tag)",
+    "variant_title": "Default Title",
+    "price": "6.9",
+    "currency": "EUR",
+    "handle": "mod-ino-30d"
+  },
+  "MOD-ALA-30D": {
+    "variant_id": "61671001227594",
+    "gid": "gid://shopify/ProductVariant/61671001227594",
+    "product_title": "Alpha-Liponsäure – Monatsration (300 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-ala-30d"
+  },
+  "MOD-ASH-30D": {
+    "variant_id": "61671001489738",
+    "gid": "gid://shopify/ProductVariant/61671001489738",
+    "product_title": "Ashwagandha KSM-66 – Monatsration (300 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "6.9",
+    "currency": "EUR",
+    "handle": "mod-ash-30d"
+  },
+  "MOD-RHO-30D": {
+    "variant_id": "61671001522506",
+    "gid": "gid://shopify/ProductVariant/61671001522506",
+    "product_title": "Rhodiola Rosea – Monatsration (200 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-rho-30d"
+  },
+  "MOD-THE-30D": {
+    "variant_id": "61671001620810",
+    "gid": "gid://shopify/ProductVariant/61671001620810",
+    "product_title": "L-Theanin – Monatsration (200 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-the-30d"
+  },
+  "MOD-FER-30D": {
+    "variant_id": "61671001686346",
+    "gid": "gid://shopify/ProductVariant/61671001686346",
+    "product_title": "Eisen Bisglycinat – Monatsration (20 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-fer-30d"
+  },
+  "MOD-B12-30D": {
+    "variant_id": "61671001719114",
+    "gid": "gid://shopify/ProductVariant/61671001719114",
+    "product_title": "Vitamin B12 (Methyl) – Monatsration (500 µg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.5",
+    "currency": "EUR",
+    "handle": "mod-b12-30d"
+  },
+  "MOD-FOL-30D": {
+    "variant_id": "61671001784650",
+    "gid": "gid://shopify/ProductVariant/61671001784650",
+    "product_title": "Folat (5-MTHF) – Monatsration (400 µg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.9",
+    "currency": "EUR",
+    "handle": "mod-fol-30d"
+  },
+  "MOD-VC-30D": {
+    "variant_id": "61671001817418",
+    "gid": "gid://shopify/ProductVariant/61671001817418",
+    "product_title": "Vitamin C (gepuffert) – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.9",
+    "currency": "EUR",
+    "handle": "mod-vc-30d"
+  },
+  "MOD-COL-30D": {
+    "variant_id": "61671001882954",
+    "gid": "gid://shopify/ProductVariant/61671001882954",
+    "product_title": "Marine Collagen – Monatsration (5 g/Tag)",
+    "variant_title": "Default Title",
+    "price": "12.9",
+    "currency": "EUR",
+    "handle": "mod-col-30d"
+  },
+  "MOD-HYA-30D": {
+    "variant_id": "61671001915722",
+    "gid": "gid://shopify/ProductVariant/61671001915722",
+    "product_title": "Hyaluronsäure – Monatsration (120 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "7.9",
+    "currency": "EUR",
+    "handle": "mod-hya-30d"
+  },
+  "MOD-SIL-30D": {
+    "variant_id": "61671002014026",
+    "gid": "gid://shopify/ProductVariant/61671002014026",
+    "product_title": "Silica (Kieselsäure) – Monatsration (100 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-sil-30d"
+  },
+  "MOD-ZIN-30D": {
+    "variant_id": "61671002046794",
+    "gid": "gid://shopify/ProductVariant/61671002046794",
+    "product_title": "Zink Bisglycinat – Monatsration (15 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.5",
+    "currency": "EUR",
+    "handle": "mod-zin-30d"
+  },
+  "MOD-AST-30D": {
+    "variant_id": "61671002079562",
+    "gid": "gid://shopify/ProductVariant/61671002079562",
+    "product_title": "Astaxanthin – Monatsration (12 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "8.9",
+    "currency": "EUR",
+    "handle": "mod-ast-30d"
+  },
+  "MOD-BIO-30D": {
+    "variant_id": "61671002112330",
+    "gid": "gid://shopify/ProductVariant/61671002112330",
+    "product_title": "Biotin – Monatsration (5 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "2.9",
+    "currency": "EUR",
+    "handle": "mod-bio-30d"
+  },
+  "MOD-SEL-30D": {
+    "variant_id": "61671002145098",
+    "gid": "gid://shopify/ProductVariant/61671002145098",
+    "product_title": "Selen – Monatsration (200 µg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.5",
+    "currency": "EUR",
+    "handle": "mod-sel-30d"
+  },
+  "MOD-CYS-30D": {
+    "variant_id": "61671002177866",
+    "gid": "gid://shopify/ProductVariant/61671002177866",
+    "product_title": "L-Cystein – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-cys-30d"
+  },
+  "MOD-MSM-30D": {
+    "variant_id": "61671002210634",
+    "gid": "gid://shopify/ProductVariant/61671002210634",
+    "product_title": "MSM – Monatsration (1000 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.5",
+    "currency": "EUR",
+    "handle": "mod-msm-30d"
+  },
+  "MOD-PRO-30D": {
+    "variant_id": "61671002243402",
+    "gid": "gid://shopify/ProductVariant/61671002243402",
+    "product_title": "Probiotika Blend – Monatsration (10 Mrd CFU/Tag)",
+    "variant_title": "Default Title",
+    "price": "9.9",
+    "currency": "EUR",
+    "handle": "mod-pro-30d"
+  },
+  "MOD-INU-30D": {
+    "variant_id": "61671002276170",
+    "gid": "gid://shopify/ProductVariant/61671002276170",
+    "product_title": "Inulin (Prebiotic) – Monatsration (5 g/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-inu-30d"
+  },
+  "MOD-COQ-30D": {
+    "variant_id": "61671002308938",
+    "gid": "gid://shopify/ProductVariant/61671002308938",
+    "product_title": "CoQ10 Ubiquinol – Monatsration (100 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "7.9",
+    "currency": "EUR",
+    "handle": "mod-coq-30d"
+  },
+  "MOD-BCO-30D": {
+    "variant_id": "61671002341706",
+    "gid": "gid://shopify/ProductVariant/61671002341706",
+    "product_title": "B-Komplex aktiv – Monatsration (Standard/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-bco-30d"
+  },
+  "MOD-DCI-30D": {
+    "variant_id": "61671002374474",
+    "gid": "gid://shopify/ProductVariant/61671002374474",
+    "product_title": "D-Chiro-Inositol – Monatsration (600 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "9.9",
+    "currency": "EUR",
+    "handle": "mod-dci-30d"
+  },
+  "MOD-OM3-30D": {
+    "variant_id": "61671002407242",
+    "gid": "gid://shopify/ProductVariant/61671002407242",
+    "product_title": "Omega-3 (EPA/DHA) – Monatsration (2 g/Tag)",
+    "variant_title": "Default Title",
+    "price": "11.9",
+    "currency": "EUR",
+    "handle": "mod-om3-30d"
+  },
+  "MOD-BLC-30D": {
+    "variant_id": "61671002440010",
+    "gid": "gid://shopify/ProductVariant/61671002440010",
+    "product_title": "Black Cohosh Extrakt – Monatsration (40 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "6.9",
+    "currency": "EUR",
+    "handle": "mod-blc-30d"
+  },
+  "MOD-SAG-30D": {
+    "variant_id": "61671002472778",
+    "gid": "gid://shopify/ProductVariant/61671002472778",
+    "product_title": "Sage Extract (Salbei) – Monatsration (300 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-sag-30d"
+  },
+  "MOD-ISO-30D": {
+    "variant_id": "61671002505546",
+    "gid": "gid://shopify/ProductVariant/61671002505546",
+    "product_title": "Isoflavone (Soja/Rotklee) – Monatsration (50 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "6.5",
+    "currency": "EUR",
+    "handle": "mod-iso-30d"
+  },
+  "MOD-CAL-30D": {
+    "variant_id": "61671002571082",
+    "gid": "gid://shopify/ProductVariant/61671002571082",
+    "product_title": "Calcium (Citrat) – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.5",
+    "currency": "EUR",
+    "handle": "mod-cal-30d"
+  },
+  "MOD-BOR-30D": {
+    "variant_id": "61671002636618",
+    "gid": "gid://shopify/ProductVariant/61671002636618",
+    "product_title": "Boron – Monatsration (3 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "3.5",
+    "currency": "EUR",
+    "handle": "mod-bor-30d"
+  },
+  "MOD-VD-30D": {
+    "variant_id": "61671002669386",
+    "gid": "gid://shopify/ProductVariant/61671002669386",
+    "product_title": "Vitamin D3 + K2 – Monatsration (5000 IU / 100 µg/Tag)",
+    "variant_title": "Default Title",
+    "price": "4.9",
+    "currency": "EUR",
+    "handle": "mod-vd-30d"
+  },
+  "MOD-CDP-30D": {
+    "variant_id": "61671003291978",
+    "gid": "gid://shopify/ProductVariant/61671003291978",
+    "product_title": "CDP-Choline (Citicolin) – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "9.9",
+    "currency": "EUR",
+    "handle": "mod-cdp-30d"
+  },
+  "MOD-BAC-30D": {
+    "variant_id": "61671003324746",
+    "gid": "gid://shopify/ProductVariant/61671003324746",
+    "product_title": "Bacopa Monnieri – Monatsration (300 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-bac-30d"
+  },
+  "MOD-LIM-30D": {
+    "variant_id": "61671003554122",
+    "gid": "gid://shopify/ProductVariant/61671003554122",
+    "product_title": "Lion's Mane Extrakt – Monatsration (500 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "7.9",
+    "currency": "EUR",
+    "handle": "mod-lim-30d"
+  },
+  "MOD-VIT-30D": {
+    "variant_id": "61671008174410",
+    "gid": "gid://shopify/ProductVariant/61671008174410",
+    "product_title": "Vitex Agnus Castus – Monatsration (400 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "5.9",
+    "currency": "EUR",
+    "handle": "mod-vit-30d"
+  },
+  "MOD-SPE-30D": {
+    "variant_id": "61671013843274",
+    "gid": "gid://shopify/ProductVariant/61671013843274",
+    "product_title": "Spermidine – Monatsration (3 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "12.9",
+    "currency": "EUR",
+    "handle": "mod-spe-30d"
+  },
+  "MOD-URO-30D": {
+    "variant_id": "61671021478218",
+    "gid": "gid://shopify/ProductVariant/61671021478218",
+    "product_title": "Urolithin A – Monatsration (250 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "16.9",
+    "currency": "EUR",
+    "handle": "mod-uro-30d"
+  },
+  "MOD-NMN-30D": {
+    "variant_id": "61671025410378",
+    "gid": "gid://shopify/ProductVariant/61671025410378",
+    "product_title": "NMN – Monatsration (300 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "18.9",
+    "currency": "EUR",
+    "handle": "mod-nmn-30d"
+  },
+  "MOD-PQQ-30D": {
+    "variant_id": "61671030456650",
+    "gid": "gid://shopify/ProductVariant/61671030456650",
+    "product_title": "PQQ – Monatsration (20 mg/Tag)",
+    "variant_title": "Default Title",
+    "price": "9.9",
+    "currency": "EUR",
+    "handle": "mod-pqq-30d"
+  },
+  "SUP-MAG-100": {
+    "variant_id": "61671036944714",
+    "gid": "gid://shopify/ProductVariant/61671036944714",
+    "product_title": "Magnesium Bisglycinat – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "16.9",
+    "currency": "EUR",
+    "handle": "sup-mag-100"
+  },
+  "SUP-IRON-100": {
+    "variant_id": "61671043694922",
+    "gid": "gid://shopify/ProductVariant/61671043694922",
+    "product_title": "Eisen Bisglycinat – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "14.9",
+    "currency": "EUR",
+    "handle": "sup-iron-100"
+  },
+  "SUP-ASH-100": {
+    "variant_id": "61671048937802",
+    "gid": "gid://shopify/ProductVariant/61671048937802",
+    "product_title": "Ashwagandha KSM-66 – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "22.9",
+    "currency": "EUR",
+    "handle": "sup-ash-100"
+  },
+  "SUP-COQ-100": {
+    "variant_id": "61671051329866",
+    "gid": "gid://shopify/ProductVariant/61671051329866",
+    "product_title": "CoQ10 Ubiquinol – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "26.9",
+    "currency": "EUR",
+    "handle": "sup-coq-100"
+  },
+  "SUP-OM3-120": {
+    "variant_id": "61671051395402",
+    "gid": "gid://shopify/ProductVariant/61671051395402",
+    "product_title": "Omega-3 (EPA/DHA) – 120 Kapseln",
+    "variant_title": "Default Title",
+    "price": "24.9",
+    "currency": "EUR",
+    "handle": "sup-om3-120"
+  },
+  "SUP-VD-100": {
+    "variant_id": "61671053001034",
+    "gid": "gid://shopify/ProductVariant/61671053001034",
+    "product_title": "Vitamin D3 + K2 – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "14.9",
+    "currency": "EUR",
+    "handle": "sup-vd-100"
+  },
+  "SUP-COL-200": {
+    "variant_id": "61671053558090",
+    "gid": "gid://shopify/ProductVariant/61671053558090",
+    "product_title": "Marine Collagen Pulver – 200 g Pulver",
+    "variant_title": "Default Title",
+    "price": "34.9",
+    "currency": "EUR",
+    "handle": "sup-col-200"
+  },
+  "SUP-PRO-60": {
+    "variant_id": "61671058964810",
+    "gid": "gid://shopify/ProductVariant/61671058964810",
+    "product_title": "Probiotika Blend – 60 Kapseln",
+    "variant_title": "Default Title",
+    "price": "27.9",
+    "currency": "EUR",
+    "handle": "sup-pro-60"
+  },
+  "SUP-BER-90": {
+    "variant_id": "61671059620170",
+    "gid": "gid://shopify/ProductVariant/61671059620170",
+    "product_title": "Berberin HCL – 90 Kapseln",
+    "variant_title": "Default Title",
+    "price": "24.9",
+    "currency": "EUR",
+    "handle": "sup-ber-90"
+  },
+  "SUP-BCO-100": {
+    "variant_id": "61671060570442",
+    "gid": "gid://shopify/ProductVariant/61671060570442",
+    "product_title": "B-Komplex aktiv – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "15.9",
+    "currency": "EUR",
+    "handle": "sup-bco-100"
+  },
+  "SUP-ZIN-100": {
+    "variant_id": "61671062569290",
+    "gid": "gid://shopify/ProductVariant/61671062569290",
+    "product_title": "Zink Bisglycinat – 100 Kapseln",
+    "variant_title": "Default Title",
+    "price": "9.9",
+    "currency": "EUR",
+    "handle": "sup-zin-100"
+  },
+  "SUP-CRE-120": {
+    "variant_id": "61671065878858",
+    "gid": "gid://shopify/ProductVariant/61671065878858",
+    "product_title": "Creatin Monohydrat – 120 Tabletten",
+    "variant_title": "Default Title",
+    "price": "19.9",
+    "currency": "EUR",
+    "handle": "sup-cre-120"
+  }
+}
