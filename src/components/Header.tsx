@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { ProgressBar } from "./ProgressBar";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 type HeaderProps = {
   currentStep?: number;
@@ -26,15 +27,16 @@ export function Header({ currentStep, totalSteps = 8 }: HeaderProps) {
           </div>
         )}
 
-        <div className="flex items-center gap-2 text-[11px] tracking-[0.24em] uppercase text-silver font-mono">
+        <div className="flex items-center gap-3 text-[11px] tracking-[0.24em] uppercase text-silver font-mono">
           {showProgress ? (
             <span className="text-pearl">
               <span className="text-lime">{String(currentStep).padStart(2, "0")}</span>
               <span className="text-ash"> / {String(totalSteps).padStart(2, "0")}</span>
             </span>
           ) : (
-            <span>Longevity Lab</span>
+            <span className="hidden sm:inline">Longevity Lab</span>
           )}
+          <ThemeSwitch />
         </div>
       </div>
 
