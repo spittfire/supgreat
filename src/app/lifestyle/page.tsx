@@ -57,7 +57,16 @@ export default function LifestylePage() {
   const setStep = useFlowStore((s) => s.setStep);
 
   const [block, setBlock] = useState(0);
-  const [d, setD] = useState<Draft>(stored ?? { sport_type: [], symptoms: [] });
+  const [d, setD] = useState<Draft>(
+    stored ?? {
+      sport_type: [],
+      symptoms: [],
+      sleep_quality: 3,
+      morning_energy: 3,
+      stress_level: 3,
+      energy_low: 3,
+    },
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
