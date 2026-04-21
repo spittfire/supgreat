@@ -1,0 +1,369 @@
+{
+  "$schema": "supgreat-recommendation-engine-v1",
+  "version": "1.0.0",
+  "description": "Mapping von Blutwerten und Symptomen auf Modul-SKUs. Duplikate werden beim Merge entfernt.",
+
+  "blood_markers": {
+    "vitamin_d_25oh": {
+      "unit": "ng/ml",
+      "label": "Vitamin D (25-OH)",
+      "reference_optimal": [40, 80],
+      "rules": [
+        {
+          "condition": "< 20",
+          "severity": "critical",
+          "modules": ["MOD-VD-30D"],
+          "note": "Starker Mangel – hochdosiertes D3+K2 empfohlen"
+        },
+        {
+          "condition": "20-40",
+          "severity": "low",
+          "modules": ["MOD-VD-30D"],
+          "note": "Suboptimal – D3+K2 auffüllen"
+        }
+      ]
+    },
+
+    "ferritin": {
+      "unit": "ng/ml",
+      "label": "Ferritin (Eisenspeicher)",
+      "reference_optimal_female": [50, 150],
+      "reference_optimal_male": [80, 200],
+      "rules": [
+        {
+          "condition_female": "< 30",
+          "condition_male": "< 50",
+          "severity": "critical",
+          "modules": ["MOD-FER-30D", "MOD-VC-30D", "MOD-B12-30D"],
+          "note": "Eisenmangel – Eisen Bisglycinat + Vitamin C für Aufnahme"
+        },
+        {
+          "condition_female": "30-50",
+          "condition_male": "50-80",
+          "severity": "low",
+          "modules": ["MOD-FER-30D", "MOD-VC-30D"]
+        }
+      ]
+    },
+
+    "vitamin_b12": {
+      "unit": "pg/ml",
+      "label": "Vitamin B12 (Holo-TC besser)",
+      "reference_optimal": [500, 900],
+      "rules": [
+        {
+          "condition": "< 300",
+          "severity": "critical",
+          "modules": ["MOD-B12-30D", "MOD-FOL-30D"],
+          "note": "B12-Mangel – zusammen mit Folat supplementieren"
+        },
+        {
+          "condition": "300-500",
+          "severity": "low",
+          "modules": ["MOD-B12-30D"]
+        }
+      ]
+    },
+
+    "folate": {
+      "unit": "ng/ml",
+      "label": "Folsäure (Folat)",
+      "reference_optimal": [10, 30],
+      "rules": [
+        {
+          "condition": "< 7",
+          "severity": "critical",
+          "modules": ["MOD-FOL-30D"]
+        }
+      ]
+    },
+
+    "magnesium": {
+      "unit": "mmol/l",
+      "label": "Magnesium (Serum)",
+      "reference_optimal": [0.85, 1.10],
+      "rules": [
+        {
+          "condition": "< 0.85",
+          "severity": "low",
+          "modules": ["MOD-MAG-30D"],
+          "note": "Hinweis: Serum-Magnesium unzuverlässig, besser intrazellulär messen"
+        }
+      ]
+    },
+
+    "zinc": {
+      "unit": "µmol/l",
+      "label": "Zink (Serum)",
+      "reference_optimal": [12, 18],
+      "rules": [
+        {
+          "condition": "< 10",
+          "severity": "low",
+          "modules": ["MOD-ZIN-30D"]
+        }
+      ]
+    },
+
+    "selenium": {
+      "unit": "µg/l",
+      "label": "Selen",
+      "reference_optimal": [120, 150],
+      "rules": [
+        {
+          "condition": "< 100",
+          "severity": "low",
+          "modules": ["MOD-SEL-30D"]
+        }
+      ]
+    },
+
+    "omega3_index": {
+      "unit": "%",
+      "label": "Omega-3 Index",
+      "reference_optimal": [8, 12],
+      "rules": [
+        {
+          "condition": "< 4",
+          "severity": "critical",
+          "modules": ["MOD-OM3-30D"]
+        },
+        {
+          "condition": "4-8",
+          "severity": "low",
+          "modules": ["MOD-OM3-30D"]
+        }
+      ]
+    },
+
+    "hba1c": {
+      "unit": "%",
+      "label": "HbA1c (Langzeitzucker)",
+      "reference_optimal": [4.5, 5.4],
+      "rules": [
+        {
+          "condition": "5.7-6.4",
+          "severity": "prediabetic",
+          "modules": ["MOD-BER-30D", "MOD-CHR-30D", "MOD-ALA-30D", "MOD-INO-30D"],
+          "note": "Prädiabetisch – metabolischer Stack"
+        },
+        {
+          "condition": "> 6.4",
+          "severity": "critical",
+          "modules": ["MOD-BER-30D", "MOD-CHR-30D", "MOD-ALA-30D"],
+          "note": "Diabetisch – ärztliche Abklärung empfohlen"
+        }
+      ]
+    },
+
+    "crp_hs": {
+      "unit": "mg/l",
+      "label": "hs-CRP (Entzündung)",
+      "reference_optimal": [0, 1.0],
+      "rules": [
+        {
+          "condition": "1.0-3.0",
+          "severity": "elevated",
+          "modules": ["MOD-OM3-30D"],
+          "note": "Leichte Entzündung – Omega-3 (Curcumin bereits in Core)"
+        },
+        {
+          "condition": "> 3.0",
+          "severity": "high",
+          "modules": ["MOD-OM3-30D"],
+          "note": "Erhöhte Entzündung – ärztliche Abklärung"
+        }
+      ]
+    },
+
+    "tsh": {
+      "unit": "mU/l",
+      "label": "TSH (Schilddrüse)",
+      "reference_optimal": [0.5, 2.5],
+      "rules": [
+        {
+          "condition": "> 2.5",
+          "severity": "elevated",
+          "modules": ["MOD-SEL-30D", "MOD-ZIN-30D"],
+          "note": "Schilddrüsen-unterstützung – ärztliche Abklärung empfohlen"
+        }
+      ]
+    },
+
+    "homocysteine": {
+      "unit": "µmol/l",
+      "label": "Homocystein",
+      "reference_optimal": [0, 8],
+      "rules": [
+        {
+          "condition": "> 10",
+          "severity": "elevated",
+          "modules": ["MOD-B12-30D", "MOD-FOL-30D", "MOD-B6-30D"],
+          "note": "Methylierungs-Stack (B6, B12, Folat)"
+        }
+      ]
+    },
+
+    "testosterone_total_male": {
+      "unit": "ng/dl",
+      "label": "Testosteron gesamt (Mann)",
+      "reference_optimal": [600, 900],
+      "rules": [
+        {
+          "condition": "< 400",
+          "severity": "low",
+          "modules": ["MOD-ZIN-30D", "MOD-VD-30D", "MOD-ASH-30D"]
+        }
+      ]
+    }
+  },
+
+  "symptoms": {
+    "sleep_poor": {
+      "label": "Schlechter Schlaf",
+      "modules": ["MOD-MAG-30D", "MOD-ASH-30D"],
+      "note": "Magnesium + Ashwagandha (Apigenin bereits in Core Night Pack)"
+    },
+    "stress_high": {
+      "label": "Hoher Stress / Nervosität",
+      "modules": ["MOD-ASH-30D", "MOD-RHO-30D", "MOD-THE-30D"]
+    },
+    "energy_low": {
+      "label": "Chronische Müdigkeit",
+      "modules": ["MOD-COQ-30D", "MOD-BCO-30D", "MOD-RHO-30D"]
+    },
+    "focus_poor": {
+      "label": "Konzentrationsprobleme",
+      "modules": ["MOD-LIM-30D", "MOD-BAC-30D", "MOD-CDP-30D"]
+    },
+    "hair_loss": {
+      "label": "Haarausfall / dünnes Haar",
+      "modules": ["MOD-BIO-30D", "MOD-ZIN-30D", "MOD-SEL-30D", "MOD-SIL-30D", "MOD-CYS-30D"]
+    },
+    "skin_issues": {
+      "label": "Hautprobleme / vorzeitige Alterung",
+      "modules": ["MOD-COL-30D", "MOD-HYA-30D", "MOD-AST-30D", "MOD-ZIN-30D"]
+    },
+    "gut_issues": {
+      "label": "Verdauungsprobleme / Reizdarm",
+      "modules": ["MOD-PRO-30D", "MOD-INU-30D"]
+    },
+    "cravings_sugar": {
+      "label": "Heißhunger / Süßhunger",
+      "modules": ["MOD-CHR-30D", "MOD-BER-30D", "MOD-INO-30D"]
+    },
+    "joint_pain": {
+      "label": "Gelenkschmerzen / Steifheit",
+      "modules": ["MOD-MSM-30D", "MOD-OM3-30D"]
+    },
+
+    "pms": {
+      "label": "PMS (Stimmung, Wassereinlagerung, Reizbarkeit)",
+      "modules": ["MOD-MAG-30D", "MOD-B6-30D", "MOD-GLY-30D", "MOD-ASH-30D"],
+      "gender_restrict": "female"
+    },
+    "heavy_period": {
+      "label": "Starke Menstruation",
+      "modules": ["MOD-FER-30D", "MOD-VC-30D", "MOD-B12-30D", "MOD-FOL-30D"],
+      "gender_restrict": "female"
+    },
+    "irregular_cycle": {
+      "label": "Unregelmäßiger Zyklus",
+      "modules": ["MOD-VIT-30D", "MOD-INO-30D", "MOD-MAG-30D"],
+      "gender_restrict": "female"
+    },
+    "fertility_wish": {
+      "label": "Kinderwunsch",
+      "modules": ["MOD-INO-30D", "MOD-DCI-30D", "MOD-FOL-30D", "MOD-COQ-30D", "MOD-OM3-30D"],
+      "gender_restrict": "female"
+    },
+    "perimenopause": {
+      "label": "Perimenopause (ca. 40-50, Schwankungen)",
+      "modules": ["MOD-MAG-30D", "MOD-ASH-30D", "MOD-VD-30D", "MOD-OM3-30D"],
+      "gender_restrict": "female"
+    },
+    "menopause_symptoms": {
+      "label": "Menopause (Hitzewallungen, Schlaf, Stimmung)",
+      "modules": ["MOD-BLC-30D", "MOD-SAG-30D", "MOD-ISO-30D", "MOD-MAG-30D", "MOD-ASH-30D", "MOD-VD-30D"],
+      "gender_restrict": "female"
+    },
+    "bone_concern": {
+      "label": "Knochengesundheit (ab 40)",
+      "modules": ["MOD-VD-30D", "MOD-CAL-30D", "MOD-BOR-30D", "MOD-MAG-30D"]
+    },
+
+    "longevity_focus": {
+      "label": "Longevity / Anti-Aging-Stack",
+      "modules": ["MOD-SPE-30D", "MOD-URO-30D", "MOD-NMN-30D", "MOD-PQQ-30D"],
+      "note": "Optional – Premium-Upgrade zur Core Box"
+    }
+  },
+
+  "lifestyle_modifiers": {
+    "sport_high_intensity": {
+      "label": "Intensiver Sport (≥4x/Woche)",
+      "modules": ["MOD-MAG-30D", "MOD-OM3-30D"]
+    },
+    "vegan": {
+      "label": "Vegan / vegetarisch",
+      "modules": ["MOD-B12-30D", "MOD-OM3-30D", "MOD-FER-30D", "MOD-ZIN-30D"]
+    },
+    "alcohol_regular": {
+      "label": "Regelmäßiger Alkoholkonsum",
+      "modules": ["MOD-BCO-30D", "MOD-MAG-30D"]
+    },
+    "shift_work": {
+      "label": "Schichtarbeit / unregelmäßiger Schlaf",
+      "modules": ["MOD-MAG-30D", "MOD-ASH-30D", "MOD-VD-30D"]
+    }
+  },
+
+  "merge_rules": {
+    "deduplicate": true,
+    "priority_order": ["blood_markers", "symptoms", "lifestyle_modifiers"],
+    "conflicts": {
+      "description": "Falls mehrere Quellen dasselbe Modul triggern, wird es nur einmal hinzugefügt. Die 'note' der höchsten Severity wird für die Begründung verwendet."
+    },
+    "core_always_included": true,
+    "max_modules_default": 10,
+    "max_modules_note": "Soft-Limit: wenn mehr als 10 Module empfohlen werden, priorisiere nach Severity (critical > high > elevated > low). Zeige dem Kunden alle, aber hebe Top 10 hervor."
+  },
+
+  "safety_flags": {
+    "description": "Trigger für Warnhinweise, die dem Kunden angezeigt werden (nicht blockierend, aber empfohlene ärztliche Abklärung).",
+    "flags": [
+      {
+        "condition": "hba1c > 6.4",
+        "message": "Dein HbA1c-Wert liegt im diabetischen Bereich. Bitte sprich mit deinem Arzt, bevor du Supplements einnimmst."
+      },
+      {
+        "condition": "crp_hs > 3.0",
+        "message": "Dein CRP-Wert weist auf eine akute Entzündung hin. Eine ärztliche Abklärung wird empfohlen."
+      },
+      {
+        "condition": "tsh > 4.0",
+        "message": "Dein TSH-Wert deutet auf eine Schilddrüsenunterfunktion hin. Bitte ärztlich abklären."
+      },
+      {
+        "condition": "ferritin < 15",
+        "message": "Dein Ferritinwert ist sehr niedrig. Bitte ärztlich abklären – eventuell reicht Supplementierung nicht."
+      }
+    ]
+  },
+
+  "pregnancy_exclusions": {
+    "description": "Module, die bei Schwangerschaft/Stillzeit NICHT empfohlen werden. Falls 'pregnancy = true', werden diese aus der Empfehlung entfernt.",
+    "excluded_modules": [
+      "MOD-ASH-30D",
+      "MOD-BER-30D",
+      "MOD-BLC-30D",
+      "MOD-SAG-30D",
+      "MOD-ISO-30D",
+      "MOD-VIT-30D",
+      "MOD-NMN-30D",
+      "MOD-URO-30D",
+      "MOD-SPE-30D",
+      "MOD-RHO-30D"
+    ]
+  }
+}

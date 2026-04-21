@@ -91,8 +91,13 @@ export const LifestyleSchema = z.object({
 });
 export type Lifestyle = z.infer<typeof LifestyleSchema>;
 
+export const ProductTypeSchema = z.enum(["core_box", "module", "standalone"]);
+export type ProductType = z.infer<typeof ProductTypeSchema>;
+
 export const SupplementRecSchema = z.object({
   id: z.string(),
+  sku: z.string(),
+  product_type: ProductTypeSchema,
   name: z.string(),
   dosage: z.string(),
   timing: z.string(),
@@ -102,11 +107,43 @@ export const SupplementRecSchema = z.object({
   reason_detail: z.string(),
   data_sources_used: z.array(z.string()),
   warning: z.string().nullable(),
+  price_single: z.number(),
+  price_subscription: z.number(),
 });
 export type SupplementRec = z.infer<typeof SupplementRecSchema>;
 
+export const CoreBoxEpisodeSchema = z.object({
+  id: z.enum(["morning", "midday", "afternoon", "night"]),
+  label: z.string(),
+  goal: z.string(),
+  ingredients: z.array(
+    z.object({
+      name: z.string(),
+      dosage: z.string(),
+      form: z.string(),
+      goal: z.string(),
+    }),
+  ),
+});
+export type CoreBoxEpisode = z.infer<typeof CoreBoxEpisodeSchema>;
+
+export const CoreBoxRecSchema = z.object({
+  sku: z.string(),
+  name: z.string(),
+  tagline: z.string(),
+  price_single: z.number(),
+  price_subscription: z.number(),
+  reason_short: z.string(),
+  episodes: z.array(CoreBoxEpisodeSchema),
+  ingredient_count: z.number().int(),
+});
+export type CoreBoxRec = z.infer<typeof CoreBoxRecSchema>;
+
 export const RecommendationSchema = z.object({
-  supplements: z.array(SupplementRecSchema),
+  core_box: CoreBoxRecSchema,
+  modules: z.array(SupplementRecSchema),
   overall_assessment: z.string(),
+  monthly_total: z.number(),
+  onetime_total: z.number(),
 });
 export type Recommendation = z.infer<typeof RecommendationSchema>;
