@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/Button";
 import { ChipSelect } from "@/components/ui/ChipSelect";
 import { MultiSelectChips } from "@/components/ui/MultiSelectChips";
 import { ScaleInput } from "@/components/ui/ScaleInput";
+import { InsightCard } from "@/components/InsightCard";
 import { DIETS, SPORT_TYPES, SYMPTOMS } from "@/lib/lists";
 import { LifestyleSchema, type Lifestyle } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 import { BLOCK_META } from "@/lib/visuals";
+import { buildBlockInsight } from "@/lib/insights";
 
 type Draft = Partial<Lifestyle>;
 
@@ -53,6 +55,9 @@ function Question({
 export default function LifestylePage() {
   const router = useRouter();
   const stored = useFlowStore((s) => s.lifestyle);
+  const profile = useFlowStore((s) => s.profile);
+  const health = useFlowStore((s) => s.health);
+  const analysis = useFlowStore((s) => s.analysis);
   const setLifestyle = useFlowStore((s) => s.setLifestyle);
   const setStep = useFlowStore((s) => s.setStep);
 
@@ -108,6 +113,18 @@ export default function LifestylePage() {
   const current = BLOCK_META[block];
   const blockLetter = String.fromCharCode(65 + block);
 
+  // Insight für den gerade abgeschlossenen Block — nur ab Block 1 (B..E)
+  // gibt es eine Zwischen-Auswertung zu zeigen.
+  const insight = useMemo(() => {
+    if (block === 0) return null;
+    return buildBlockInsight(block - 1, {
+      draft: d,
+      profile,
+      health,
+      analysis,
+    });
+  }, [block, d, profile, health, analysis]);
+
   return (
     <StepFrame
       step={5}
@@ -148,6 +165,8 @@ export default function LifestylePage() {
             );
           })}
         </div>
+
+        {insight && <InsightCard insight={insight} />}
 
         <div className="space-y-4">
           {block === 0 && (
