@@ -293,7 +293,7 @@ export default function LifestylePage() {
                 <ChipSelect
                   value={d.processed_food ?? null}
                   onChange={(v) => update("processed_food", v)}
-                  options={["Täglich", "Mehrmals pro Woche", "1× pro Woche", "Selten", "Nie"]}
+                  options={["Nie", "Selten", "1× pro Woche", "Mehrmals pro Woche", "Täglich"]}
                   cols={2}
                 />
               </Question>
@@ -434,7 +434,7 @@ export default function LifestylePage() {
                 <ChipSelect
                   value={d.outdoor_time ?? null}
                   onChange={(v) => update("outdoor_time", v)}
-                  options={["Täglich", "Mehrmals pro Woche", "Wöchentlich", "Selten", "Fast nie"]}
+                  options={["Fast nie", "Selten", "Wöchentlich", "Mehrmals pro Woche", "Täglich"]}
                   cols={2}
                 />
               </Question>
