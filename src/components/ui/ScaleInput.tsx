@@ -3,13 +3,16 @@
 import { cn } from "@/lib/utils";
 
 type ScaleInputProps = {
-  value: number;
+  /** `null` means no value chosen yet — visually nothing is highlighted. */
+  value: number | null;
   onChange: (v: number) => void;
   min?: number;
   max?: number;
   leftLabel?: string;
   rightLabel?: string;
   ariaLabel?: string;
+  /** Render in error state — used when the question is required and unanswered. */
+  error?: boolean;
 };
 
 export function ScaleInput({
@@ -20,6 +23,7 @@ export function ScaleInput({
   leftLabel,
   rightLabel,
   ariaLabel,
+  error = false,
 }: ScaleInputProps) {
   const dots: number[] = [];
   for (let i = min; i <= max; i++) dots.push(i);
@@ -45,7 +49,9 @@ export function ScaleInput({
                 "flex-1 h-14 rounded-xl font-mono text-lg transition-all duration-300 border",
                 active
                   ? "border-lime bg-lime/10 text-lime shadow-glow-lime scale-[1.04]"
-                  : "border-steel bg-onyx text-silver hover:border-iron hover:text-pearl",
+                  : error
+                    ? "border-coral/60 bg-coral/5 text-silver hover:border-coral hover:text-pearl"
+                    : "border-steel bg-onyx text-silver hover:border-iron hover:text-pearl",
               )}
             >
               {n}

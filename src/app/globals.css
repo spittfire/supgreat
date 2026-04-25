@@ -83,7 +83,7 @@
 :root {
   --bg-radial-lime-stop: rgba(201, 242, 92, 0.14);
   --bg-radial-subtle-stop: rgba(255, 255, 255, 0.035);
-  --bg-radial-amber-stop: rgba(230, 168, 75, 0.12);
+  --bg-radial-sage-stop: rgba(143, 200, 130, 0.16);
   --selection-bg: rgba(201, 242, 92, 0.35);
   --scrollbar-track: var(--color-carbon);
   --scrollbar-thumb: var(--color-steel);
@@ -119,7 +119,7 @@ html.dark {
 
   --bg-radial-lime-stop: rgba(201, 242, 92, 0.14);
   --bg-radial-subtle-stop: rgba(255, 255, 255, 0.035);
-  --bg-radial-amber-stop: rgba(230, 168, 75, 0.12);
+  --bg-radial-sage-stop: rgba(143, 200, 130, 0.16);
   --selection-bg: rgba(201, 242, 92, 0.35);
   --scrollbar-track: #0A0B0D;
   --scrollbar-thumb: #2A2E36;
@@ -155,7 +155,7 @@ html.light {
 
   --bg-radial-lime-stop: rgba(138, 184, 26, 0.16);
   --bg-radial-subtle-stop: rgba(0, 0, 0, 0.03);
-  --bg-radial-amber-stop: rgba(178, 121, 40, 0.10);
+  --bg-radial-sage-stop: rgba(95, 145, 95, 0.10);
   --selection-bg: rgba(138, 184, 26, 0.30);
   --scrollbar-track: #FAF7F1;
   --scrollbar-thumb: #E3DDCD;
@@ -265,10 +265,10 @@ html.light .shadow-glow-soft {
     transparent 55%
   );
 }
-.bg-radial-amber {
+.bg-radial-sage {
   background-image: radial-gradient(
     circle at 70% 80%,
-    var(--bg-radial-amber-stop) 0%,
+    var(--bg-radial-sage-stop) 0%,
     transparent 55%
   );
 }

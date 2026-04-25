@@ -13,18 +13,29 @@ type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   hint?: string;
   icon?: LucideIcon;
   unit?: string;
+  error?: boolean;
 };
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  { label, hint, icon: Icon, unit, className, id, ...props },
+  { label, hint, icon: Icon, unit, className, id, error = false, ...props },
   ref,
 ) {
   const inputId = id ?? props.name;
   return (
     <label htmlFor={inputId} className="block">
       {label && (
-        <div className="mb-2.5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-silver font-medium">
-          {Icon && <Icon className="w-3.5 h-3.5 text-lime" strokeWidth={1.5} />}
+        <div
+          className={cn(
+            "mb-2.5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-medium",
+            error ? "text-coral" : "text-silver",
+          )}
+        >
+          {Icon && (
+            <Icon
+              className={cn("w-3.5 h-3.5", error ? "text-coral" : "text-lime")}
+              strokeWidth={1.5}
+            />
+          )}
           {label}
         </div>
       )}
@@ -32,9 +43,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         <input
           ref={ref}
           id={inputId}
+          aria-invalid={error || undefined}
           className={cn(
-            "w-full h-12 px-4 text-base rounded-xl border border-steel bg-onyx text-pearl placeholder:text-ash",
-            "transition-all focus:border-lime focus:bg-graphite focus:outline-none",
+            "w-full h-12 px-4 text-base rounded-xl border bg-onyx text-pearl placeholder:text-ash",
+            "transition-all focus:bg-graphite focus:outline-none",
+            error
+              ? "border-coral focus:border-coral"
+              : "border-steel focus:border-lime",
             unit && "pr-14",
             className,
           )}

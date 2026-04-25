@@ -15,6 +15,7 @@ type SegmentedControlProps<T extends string> = {
   options: SegmentOption<T>[];
   ariaLabel?: string;
   block?: boolean;
+  error?: boolean;
 };
 
 export function SegmentedControl<T extends string>({
@@ -23,13 +24,16 @@ export function SegmentedControl<T extends string>({
   options,
   ariaLabel,
   block = false,
+  error = false,
 }: SegmentedControlProps<T>) {
   return (
     <div
       role="radiogroup"
       aria-label={ariaLabel}
+      aria-invalid={error || undefined}
       className={cn(
-        "inline-flex rounded-2xl border border-steel bg-onyx p-1.5 shadow-inset-line",
+        "inline-flex rounded-2xl border bg-onyx p-1.5 shadow-inset-line",
+        error ? "border-coral" : "border-steel",
         block && "w-full",
       )}
     >
