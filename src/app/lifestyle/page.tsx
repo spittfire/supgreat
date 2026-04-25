@@ -60,7 +60,7 @@ function Question({
     <div
       className={`rounded-2xl border p-5 md:p-6 transition-colors ${
         error
-          ? "border-coral bg-coral/5 shadow-[0_0_0_1px_rgba(255,107,92,0.25)]"
+          ? "border-coral bg-coral/5 shadow-glow-coral"
           : "border-steel bg-onyx"
       }`}
     >

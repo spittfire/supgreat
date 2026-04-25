@@ -236,6 +236,11 @@ body {
     0 0 40px rgba(230, 168, 75, 0.22),
     0 1px 0 rgba(255, 255, 255, 0.04) inset;
 }
+.shadow-glow-coral {
+  box-shadow:
+    0 0 40px rgba(255, 107, 92, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
 .shadow-glow-soft {
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),

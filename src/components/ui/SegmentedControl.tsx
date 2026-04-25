@@ -32,8 +32,8 @@ export function SegmentedControl<T extends string>({
       aria-label={ariaLabel}
       aria-invalid={error || undefined}
       className={cn(
-        "inline-flex rounded-2xl border bg-onyx p-1.5 shadow-inset-line",
-        error ? "border-coral" : "border-steel",
+        "inline-flex rounded-2xl border bg-onyx p-1.5",
+        error ? "border-coral shadow-glow-coral" : "border-steel shadow-inset-line",
         block && "w-full",
       )}
     >

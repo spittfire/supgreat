@@ -101,23 +101,25 @@ export default function ProfilePage() {
     const parsed = ProfileSchema.safeParse(draft);
     if (!parsed.success) {
       const failed = new Set<ProfileField>();
-      const messages: string[] = [];
       for (const issue of parsed.error.issues) {
         const field = issue.path[0];
         if (typeof field === "string" && field in FIELD_MESSAGES) {
-          const f = field as ProfileField;
-          if (!failed.has(f)) {
-            failed.add(f);
-            messages.push(FIELD_MESSAGES[f]);
-          }
+          failed.add(field as ProfileField);
         }
       }
       setFieldErrors(failed);
-      setError(
-        messages.length > 0
-          ? messages[0]
-          : "Bitte alle Pflichtfelder korrekt ausfüllen.",
-      );
+      const count = failed.size;
+      if (count === 1) {
+        // Bei nur einem Fehler liefern wir die spezifische Anweisung mit,
+        // weil 'das eine rot markierte Feld' für den User klar ist und der
+        // Hinweis ('18–100 Jahre') Kontext liefert.
+        const only = Array.from(failed)[0];
+        setError(FIELD_MESSAGES[only]);
+      } else {
+        setError(
+          `Es fehlen noch ${count} Angaben — bitte die rot markierten Felder ausfüllen, um fortzufahren.`,
+        );
+      }
       return;
     }
     setFieldErrors(new Set());
