@@ -46,10 +46,10 @@ export default function RootLayout({
             aria-hidden
             className="pointer-events-none fixed inset-0 bg-radial-subtle"
           />
-          {/* Amber pool bottom-right */}
+          {/* Sage pool bottom-right */}
           <div
             aria-hidden
-            className="pointer-events-none fixed inset-0 bg-radial-amber"
+            className="pointer-events-none fixed inset-0 bg-radial-sage"
           />
           {/* Grain texture overlay */}
           <div

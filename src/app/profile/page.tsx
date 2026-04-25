@@ -39,6 +39,17 @@ export default function ProfilePage() {
   const setProfile = useFlowStore((s) => s.setProfile);
   const setStep = useFlowStore((s) => s.setStep);
 
+  type ProfileField = keyof Profile;
+
+  const FIELD_MESSAGES: Record<ProfileField, string> = {
+    first_name: "Bitte gib deinen Vornamen ein.",
+    sex: "Bitte wähle dein Geschlecht aus.",
+    age: "Bitte gib dein Alter ein (18–100 Jahre).",
+    height_cm: "Bitte gib deine Größe in cm ein (120–230).",
+    weight_kg: "Bitte gib dein Gewicht in kg ein (30–250).",
+    goals: "Bitte wähle 1–3 Prioritäten aus.",
+  };
+
   const [firstName, setFirstName] = useState(storedProfile?.first_name ?? "");
   const [sex, setSex] = useState<Sex | null>(storedProfile?.sex ?? null);
   const [age, setAge] = useState<string>(storedProfile?.age ? String(storedProfile.age) : "");
@@ -50,6 +61,7 @@ export default function ProfilePage() {
   );
   const [goals, setGoals] = useState<string[]>(storedProfile?.goals ?? []);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Set<ProfileField>>(new Set());
 
   useEffect(() => {
     setStep(3);
@@ -57,12 +69,23 @@ export default function ProfilePage() {
 
   const hasAnalysis = !!analysis;
 
+  const clearFieldError = (field: ProfileField) => {
+    setFieldErrors((prev) => {
+      if (!prev.has(field)) return prev;
+      const next = new Set(prev);
+      next.delete(field);
+      return next;
+    });
+    setError(null);
+  };
+
   const toggleGoal = (label: string) => {
     setGoals((prev) => {
       if (prev.includes(label)) return prev.filter((g) => g !== label);
       if (prev.length >= 3) return prev;
       return [...prev, label];
     });
+    clearFieldError("goals");
   };
 
   const onSubmit = (e: React.FormEvent) => {
@@ -77,11 +100,28 @@ export default function ProfilePage() {
     };
     const parsed = ProfileSchema.safeParse(draft);
     if (!parsed.success) {
+      const failed = new Set<ProfileField>();
+      const messages: string[] = [];
+      for (const issue of parsed.error.issues) {
+        const field = issue.path[0];
+        if (typeof field === "string" && field in FIELD_MESSAGES) {
+          const f = field as ProfileField;
+          if (!failed.has(f)) {
+            failed.add(f);
+            messages.push(FIELD_MESSAGES[f]);
+          }
+        }
+      }
+      setFieldErrors(failed);
       setError(
-        parsed.error.issues[0]?.message ?? "Bitte alle Pflichtfelder korrekt ausfüllen.",
+        messages.length > 0
+          ? messages[0]
+          : "Bitte alle Pflichtfelder korrekt ausfüllen.",
       );
       return;
     }
+    setFieldErrors(new Set());
+    setError(null);
     setProfile(parsed.data as Profile);
     router.push("/health");
   };
@@ -105,21 +145,38 @@ export default function ProfilePage() {
             label="Vorname"
             name="first_name"
             value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) => {
+              setFirstName(e.target.value);
+              clearFieldError("first_name");
+            }}
             placeholder="Wie sollen wir dich nennen?"
+            error={fieldErrors.has("first_name")}
             required
             autoFocus
           />
           <div>
-            <div className="mb-2.5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-silver font-medium">
-              <VenusAndMars className="w-3.5 h-3.5 text-lime" strokeWidth={1.5} />
+            <div
+              className={`mb-2.5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-medium ${
+                fieldErrors.has("sex") ? "text-coral" : "text-silver"
+              }`}
+            >
+              <VenusAndMars
+                className={`w-3.5 h-3.5 ${
+                  fieldErrors.has("sex") ? "text-coral" : "text-lime"
+                }`}
+                strokeWidth={1.5}
+              />
               Geschlecht
             </div>
             <SegmentedControl<Sex>
               value={sex}
-              onChange={setSex}
+              onChange={(v) => {
+                setSex(v);
+                clearFieldError("sex");
+              }}
               options={SEX_OPTIONS}
               ariaLabel="Geschlecht"
+              error={fieldErrors.has("sex")}
               block
             />
           </div>
@@ -133,9 +190,13 @@ export default function ProfilePage() {
             name="age"
             inputMode="numeric"
             value={age}
-            onChange={(e) => setAge(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => {
+              setAge(e.target.value.replace(/\D/g, ""));
+              clearFieldError("age");
+            }}
             placeholder="38"
             unit="Jahre"
+            error={fieldErrors.has("age")}
           />
           <TextField
             icon={Ruler}
@@ -143,9 +204,13 @@ export default function ProfilePage() {
             name="height"
             inputMode="numeric"
             value={height}
-            onChange={(e) => setHeight(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => {
+              setHeight(e.target.value.replace(/\D/g, ""));
+              clearFieldError("height_cm");
+            }}
             placeholder="178"
             unit="cm"
+            error={fieldErrors.has("height_cm")}
           />
           <TextField
             icon={Scale}
@@ -153,14 +218,24 @@ export default function ProfilePage() {
             name="weight"
             inputMode="numeric"
             value={weight}
-            onChange={(e) => setWeight(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => {
+              setWeight(e.target.value.replace(/\D/g, ""));
+              clearFieldError("weight_kg");
+            }}
             placeholder="75"
             unit="kg"
+            error={fieldErrors.has("weight_kg")}
           />
         </div>
 
         {/* Ziele */}
-        <section>
+        <section
+          className={
+            fieldErrors.has("goals")
+              ? "rounded-2xl border border-coral/60 bg-coral/5 p-5 -m-5"
+              : ""
+          }
+        >
           <div className="flex items-end justify-between mb-5 gap-4 flex-wrap">
             <div>
               <Eyebrow>Deine Prioritäten</Eyebrow>
@@ -169,8 +244,10 @@ export default function ProfilePage() {
                 <span className="italic text-lime">verbessern</span>?
               </h2>
             </div>
-            <div className="font-mono text-sm text-silver">
-              <span className="text-lime">{goals.length}</span>{" "}
+            <div className="font-mono text-sm">
+              <span className={fieldErrors.has("goals") ? "text-coral" : "text-lime"}>
+                {goals.length}
+              </span>{" "}
               <span className="text-ash">/ 3</span>
             </div>
           </div>
