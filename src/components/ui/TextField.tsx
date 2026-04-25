@@ -48,7 +48,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
             "w-full h-12 px-4 text-base rounded-xl border bg-onyx text-pearl placeholder:text-ash",
             "transition-all focus:bg-graphite focus:outline-none",
             error
-              ? "border-coral focus:border-coral"
+              ? "border-coral focus:border-coral shadow-glow-coral"
               : "border-steel focus:border-lime",
             unit && "pr-14",
             className,
