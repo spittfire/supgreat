@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
@@ -145,39 +145,27 @@ export default function LifestylePage() {
   };
 
   const nextBlock = () => {
-    const result = validateAll();
-    const missingInCurrentBlock = result.missing.filter(
-      (f) => FIELD_TO_BLOCK[f] === block,
-    );
-
-    // Mid-flow: aktueller Block muss vollständig sein, sonst rote Markierung
-    // und kein Weitergehen. Andere Blöcke werden ebenfalls markiert, damit
-    // der User sieht, was insgesamt noch fehlt.
+    // Mid-Flow: keine Validierung. Der User darf frei zwischen Blocks
+    // springen — rote Markierungen entstehen erst beim finalen Submit.
     if (block < BLOCK_META.length - 1) {
-      if (missingInCurrentBlock.length > 0) {
-        setFieldErrors(new Set(result.missing));
-        setError(
-          `Bitte beantworte ${missingInCurrentBlock.length} offene ${
-            missingInCurrentBlock.length === 1 ? "Frage" : "Fragen"
-          } in diesem Block.`,
-        );
-        return;
-      }
-      setFieldErrors(new Set(result.missing));
       setError(null);
       goToBlock(block + 1);
       return;
     }
 
-    // Letzter Block: alles muss valide sein. Sonst springen wir zur ersten
-    // offenen Frage und markieren alle fehlenden Felder.
+    // Finaler Submit auf Block E: jetzt validieren wir alles, springen
+    // zum ersten Block mit Lücken und markieren dort die offenen Felder.
+    const result = validateAll();
     if (!result.ok) {
       setFieldErrors(new Set(result.missing));
       const firstMissingBlock = Math.min(
         ...result.missing.map((f) => FIELD_TO_BLOCK[f]),
       );
+      const count = result.missing.length;
       setError(
-        `Es fehlen noch ${result.missing.length} Antworten — wir sind zur ersten gesprungen.`,
+        count === 1
+          ? "Es fehlt noch eine Antwort — bitte das rot markierte Feld ausfüllen, um fortzufahren."
+          : `Es fehlen noch ${count} Antworten — bitte die rot markierten Felder ausfüllen, um fortzufahren.`,
       );
       goToBlock(firstMissingBlock);
       return;
@@ -463,7 +451,18 @@ export default function LifestylePage() {
           )}
         </div>
 
-        {error && <p className="mt-6 text-sm text-coral">{error}</p>}
+        {error && (
+          <div
+            role="alert"
+            className="mt-6 flex items-start gap-3 rounded-xl border border-coral/50 bg-coral/5 p-4 shadow-glow-coral"
+          >
+            <AlertCircle
+              className="h-5 w-5 text-coral shrink-0 mt-0.5"
+              strokeWidth={1.6}
+            />
+            <p className="text-sm text-coral leading-relaxed">{error}</p>
+          </div>
+        )}
 
         <StepActions>
           {block === 0 ? (
