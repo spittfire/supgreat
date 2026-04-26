@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   Cake,
@@ -272,7 +273,18 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        {error && <p className="text-sm text-coral">{error}</p>}
+        {error && (
+          <div
+            role="alert"
+            className="flex items-start gap-3 rounded-xl border border-coral/50 bg-coral/5 p-4 shadow-glow-coral"
+          >
+            <AlertCircle
+              className="h-5 w-5 text-coral shrink-0 mt-0.5"
+              strokeWidth={1.6}
+            />
+            <p className="text-sm text-coral leading-relaxed">{error}</p>
+          </div>
+        )}
 
         {!hasAnalysis && (
           <p className="text-xs text-ash">
