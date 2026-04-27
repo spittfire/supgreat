@@ -61,6 +61,7 @@ export function mockRecommend(ctx: RecommendContext): Recommendation {
       sku: r.product.sku,
       product_type: r.product.product_type,
       name: r.product.name,
+      category: r.product.category,
       dosage: r.product.dosage,
       timing: r.product.timing,
       category_color: r.product.pill_color,

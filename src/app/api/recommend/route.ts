@@ -162,6 +162,7 @@ export async function POST(request: NextRequest) {
         sku: p.sku,
         product_type: p.product_type,
         name: p.name,
+        category: p.category,
         dosage: p.dosage,
         timing: p.timing,
         category_color: p.pill_color,

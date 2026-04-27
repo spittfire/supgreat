@@ -8,9 +8,9 @@ import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { LoadingAnalysis } from "@/components/LoadingAnalysis";
-import { PillBox } from "@/components/PillBox";
 import { CoreBoxHero } from "@/components/CoreBoxHero";
-import { SupplementCard } from "@/components/SupplementCard";
+import { ModuleSummary } from "@/components/ModuleSummary";
+import { PostPurchasePromise } from "@/components/PostPurchasePromise";
 import type { Recommendation } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 
@@ -124,7 +124,7 @@ export default function BoxPage() {
           <span className="text-lime">{profile.first_name}.</span>
         </>
       }
-      sub="Core Box als tägliches Fundament plus Monats-Module gegen konkrete Lücken in deinem Profil."
+      sub="Core Box als tägliches Fundament plus persönliche Zusatz-Module — passgenau zu deinem Profil."
     >
       {/* Plan toggle */}
       <div
@@ -159,37 +159,25 @@ export default function BoxPage() {
       {/* Core Box Hero */}
       <CoreBoxHero coreBox={core_box} subscription={subscription} />
 
-      {/* Pill box visualisation of modules */}
+      {/* Module-Summary (counts only — keine Wirkstoffnamen) */}
       {modules.length > 0 && (
         <div className="mt-10">
-          <PillBox supplements={modules} />
+          <ModuleSummary modules={modules} />
         </div>
       )}
 
       {/* Overall assessment */}
       <div className="mt-10 rounded-2xl border border-steel bg-onyx p-6 md:p-8">
-        <Eyebrow>Gesamtbild</Eyebrow>
+        <Eyebrow>Gesamteinschätzung</Eyebrow>
         <p className="mt-4 text-pearl leading-relaxed text-lg">
           {recommendation.overall_assessment}
         </p>
       </div>
 
-      {/* Module cards */}
-      {modules.length > 0 && (
-        <>
-          <div className="mt-10 flex items-baseline justify-between">
-            <Eyebrow>Deine Module</Eyebrow>
-            <span className="text-xs font-mono text-ash">
-              {modules.length} Add-ons
-            </span>
-          </div>
-          <div className="mt-4 grid gap-4">
-            {modules.map((rec, i) => (
-              <SupplementCard key={rec.id} rec={rec} index={i} />
-            ))}
-          </div>
-        </>
-      )}
+      {/* Post-Purchase Promise */}
+      <div className="mt-10">
+        <PostPurchasePromise />
+      </div>
 
       {/* Price ribbon */}
       <div className="mt-14 relative overflow-hidden rounded-3xl border border-lime/30 bg-gradient-to-br from-lime/10 via-onyx to-onyx p-6 md:p-10 shadow-glow-soft">
@@ -201,13 +189,17 @@ export default function BoxPage() {
           <div>
             <Eyebrow>Deine Box</Eyebrow>
             <h2 className="mt-4 font-display text-4xl md:text-5xl leading-tight text-pearl">
-              Core + <span className="italic text-lime">{modules.length} Module</span>.
+              Core +{" "}
+              <span className="italic text-lime">
+                {modules.length} {modules.length === 1 ? "Modul" : "Module"}
+              </span>
+              .
             </h2>
             <p className="mt-4 text-silver leading-relaxed">
               Core Box (€
               {(subscription ? core_box.price_subscription : core_box.price_single).toFixed(0)})
               {modules.length > 0
-                ? ` + ${modules.length} Monats-Module (€${(subscription ? monthlyModules : onceModules).toFixed(0)})`
+                ? ` + ${modules.length} ${modules.length === 1 ? "Monats-Modul" : "Monats-Module"} (€${(subscription ? monthlyModules : onceModules).toFixed(0)})`
                 : ""}
               . Kostenloser Versand, monatlich kündbar.
             </p>
