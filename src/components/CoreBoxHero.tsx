@@ -125,19 +125,14 @@ export function CoreBoxHero({ coreBox, subscription }: CoreBoxHeroProps) {
                   />
                 </button>
                 {open && (
-                  <ul className="px-4 pb-3 pt-1 space-y-1.5 border-t border-steel/60">
-                    {ep.ingredients.map((ing) => (
-                      <li
-                        key={ing.name}
-                        className="flex items-baseline justify-between gap-3 text-sm"
-                      >
-                        <span className="text-pearl truncate">{ing.name}</span>
-                        <span className="font-mono text-[12px] text-silver tabular-nums shrink-0">
-                          {ing.dosage}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="px-4 pb-3 pt-2 border-t border-steel/60">
+                    <p className="text-sm text-silver leading-relaxed">
+                      {ep.ingredients.length}{" "}
+                      {ep.ingredients.length === 1 ? "Wirkstoff" : "Wirkstoffe"} für{" "}
+                      <span className="text-pearl">{ep.goal.toLowerCase()}</span>.
+                      Konkrete Auflistung im Bericht nach dem Kauf.
+                    </p>
+                  </div>
                 )}
               </div>
             );

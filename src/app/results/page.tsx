@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
-import { ArrowLeft, ArrowRight, FileWarning } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileWarning, ShieldCheck } from "lucide-react";
 import { StepFrame } from "@/components/StepFrame";
 import { StepActions } from "@/components/StepActions";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { BiomarkerCard } from "@/components/BiomarkerCard";
 import { LongevityScore } from "@/components/LongevityScore";
 import { ProfileSummary } from "@/components/ProfileSummary";
+import { PostPurchasePromise } from "@/components/PostPurchasePromise";
 import { lifestylePenalty } from "@/lib/lifestyle-triggers";
 import { computeLongevityScore } from "@/lib/optimal-ranges";
-import type { Biomarker } from "@/lib/types";
-import { CATEGORY_ICON } from "@/lib/visuals";
+import type { BiomarkerStatus } from "@/lib/types";
 import { useFlowStore } from "@/store/flow-store";
 
 export default function ResultsPage() {
@@ -27,21 +26,28 @@ export default function ResultsPage() {
     setStep(6);
   }, [setStep]);
 
-  const { grouped, finalScore, bioAgeDelta } = useMemo(() => {
+  const { totals, finalScore, bioAgeDelta } = useMemo(() => {
     const markers = analysis?.biomarkers ?? [];
-    const byCat = new Map<string, Biomarker[]>();
-    for (const m of markers) {
-      const arr = byCat.get(m.category) ?? [];
-      arr.push(m);
-      byCat.set(m.category, arr);
-    }
+    const totals: Record<BiomarkerStatus, number> = {
+      optimal: 0,
+      suboptimal: 0,
+      low: 0,
+      high: 0,
+      critical: 0,
+      unknown: 0,
+    };
+    for (const m of markers) totals[m.status] = (totals[m.status] ?? 0) + 1;
     const penalty = lifestyle ? lifestylePenalty(lifestyle) : 0;
     const finalScore = computeLongevityScore(markers, penalty);
     const bioAgeDelta = (75 - finalScore) / 3;
-    return { grouped: byCat, finalScore, bioAgeDelta };
+    return { totals, finalScore, bioAgeDelta };
   }, [analysis, lifestyle]);
 
-  const hasAnalysis = (analysis?.biomarkers.length ?? 0) > 0;
+  const totalMarkers = analysis?.biomarkers.length ?? 0;
+  const hasAnalysis = totalMarkers > 0;
+  const optimal = totals.optimal;
+  const attention = totals.suboptimal + totals.low + totals.high;
+  const critical = totals.critical;
 
   return (
     <StepFrame
@@ -52,7 +58,7 @@ export default function ResultsPage() {
           Dein <span className="italic text-lime">Protokoll</span>.
         </>
       }
-      sub="Diese Übersicht ist keine medizinische Diagnose — sie dient der Orientierung für deine SUPGREAT Box."
+      sub="Die Detail-Auswertung deines Bluttests bekommst du nach dem Kauf per E-Mail — hier siehst du den groben Stand."
     >
       {!hasAnalysis && (
         <div className="rounded-2xl border border-amber/30 bg-amber/5 p-5 flex gap-3 items-start mb-10">
@@ -61,7 +67,7 @@ export default function ResultsPage() {
             <div className="font-medium text-amber">Kein Bluttest erkannt</div>
             <p className="text-silver mt-1">
               Keine Biomarker-Werte erkannt. Die Box wird dennoch auf Basis von
-              Anamnese und Lifestyle erstellt — lade ideal vorher deinen Bluttest hoch.
+              Anamnese und Lifestyle erstellt — ideal lädst du vorher deinen Bluttest hoch.
             </p>
           </div>
         </div>
@@ -80,55 +86,67 @@ export default function ResultsPage() {
       )}
 
       {hasAnalysis && (
-        <div className="mt-16 space-y-14">
-          <div>
-            <Eyebrow>Deine Biomarker</Eyebrow>
-            <h2 className="mt-4 font-display text-3xl md:text-4xl text-pearl">
-              {analysis!.biomarkers.length}{" "}
-              <span className="italic text-silver">Werte,</span> gruppiert.
-            </h2>
+        <section className="mt-12 rounded-3xl border border-steel bg-onyx p-6 md:p-10 shadow-glow-soft">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="h-5 w-5 text-lime" strokeWidth={1.6} />
+            <Eyebrow>Bluttest-Stand</Eyebrow>
+          </div>
+          <h2 className="mt-4 font-display text-3xl md:text-4xl text-pearl">
+            <span className="text-lime">{totalMarkers}</span>{" "}
+            <span className="italic text-silver">Werte analysiert.</span>
+          </h2>
+
+          <div className="mt-7 grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border border-lime/30 bg-lime/5 p-4">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-silver font-mono">
+                Im Zielbereich
+              </div>
+              <div className="mt-2 font-mono text-3xl text-lime tabular-nums">
+                {optimal}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-amber/30 bg-amber/5 p-4">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-silver font-mono">
+                Mit Spielraum
+              </div>
+              <div className="mt-2 font-mono text-3xl text-amber tabular-nums">
+                {attention}
+              </div>
+            </div>
+            <div
+              className={`rounded-2xl border p-4 ${
+                critical > 0
+                  ? "border-coral/40 bg-coral/5"
+                  : "border-steel bg-graphite/40"
+              }`}
+            >
+              <div className="text-[10px] uppercase tracking-[0.18em] text-silver font-mono">
+                Mit Auffälligkeit
+              </div>
+              <div
+                className={`mt-2 font-mono text-3xl tabular-nums ${
+                  critical > 0 ? "text-coral" : "text-ash"
+                }`}
+              >
+                {critical}
+              </div>
+            </div>
           </div>
 
-          {Array.from(grouped.entries()).map(([cat, markers]) => {
-            const Icon = CATEGORY_ICON[cat];
-            const optCount = markers.filter((m) => m.status === "optimal").length;
-            return (
-              <section key={cat}>
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    {Icon && (
-                      <span
-                        aria-hidden
-                        className="w-10 h-10 rounded-xl border border-steel bg-graphite flex items-center justify-center text-lime"
-                      >
-                        <Icon className="w-5 h-5" strokeWidth={1.5} />
-                      </span>
-                    )}
-                    <div>
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-silver">
-                        Kategorie
-                      </div>
-                      <h3 className="font-display text-xl text-pearl">{cat}</h3>
-                    </div>
-                  </div>
-                  <span className="text-xs text-ash font-mono">
-                    <span className="text-lime">{optCount}</span> / {markers.length}{" "}
-                    optimal
-                  </span>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {markers.map((m) => (
-                    <BiomarkerCard key={m.key} marker={m} />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
+          <p className="mt-7 max-w-prose text-pearl leading-relaxed">
+            Welche Werte konkret betroffen sind, wo deine Referenzbereiche liegen
+            und was wir daraus für dich ableiten, schicken wir dir nach dem Kauf
+            in deinem persönlichen PDF-Bericht.
+          </p>
+        </section>
       )}
 
-      <p className="mt-16 text-xs text-ash max-w-prose">
-        Hinweis: Dieses Protokoll ersetzt keine ärztliche Beratung. Bei kritischen
+      <div className="mt-10">
+        <PostPurchasePromise />
+      </div>
+
+      <p className="mt-12 text-xs text-ash max-w-prose">
+        Hinweis: Diese Übersicht ersetzt keine ärztliche Beratung. Bei kritischen
         Auffälligkeiten empfehlen wir, die Werte mit deinem Arzt zu besprechen.
       </p>
 

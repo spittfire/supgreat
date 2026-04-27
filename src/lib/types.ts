@@ -99,6 +99,7 @@ export const SupplementRecSchema = z.object({
   sku: z.string(),
   product_type: ProductTypeSchema,
   name: z.string(),
+  category: z.string(),
   dosage: z.string(),
   timing: z.string(),
   category_color: z.string(),
